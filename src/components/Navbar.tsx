@@ -18,7 +18,9 @@ const Navbar = () => {
   }, [width]);
   return (
     <nav className="w-full bg-gray-400 h-20 flex justify-between items-center">
-      <img src="./logo.svg" alt="" width="100" />
+      <a href="">
+        <img src="./logo.svg" alt="" width="100" />
+      </a>
       <ul
         className={`justify-around w-1/3 ${showMenu ? "flex" : "hidden"} ${
           width < 640 &&
@@ -26,7 +28,15 @@ const Navbar = () => {
         }`}
       >
         <li className="p-3 ">
-          <a href="#home">Home</a>
+          <a
+            href="#home"
+            onClick={() => {
+              setShowMenu(false);
+              window.scrollTo(0, 0);
+            }}
+          >
+            Home
+          </a>
         </li>
         <li className="p-3 ">
           <a href="#about">About</a>
