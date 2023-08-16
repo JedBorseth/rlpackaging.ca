@@ -20,9 +20,12 @@ import { ViewTransitions } from "astro:transitions";
   </head>
   <body>
     <slot />
-    <style>
+    <style is:global>
       html {
         scroll-behavior: smooth;
+      }
+      .hidden {
+        display: none;
       }
     </style>
   </body>
