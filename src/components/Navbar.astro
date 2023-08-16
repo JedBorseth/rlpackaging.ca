@@ -1,0 +1,65 @@
+---
+import {
+  Astronav,
+  MenuItems,
+  MenuIcon,
+  Dropdown,
+  DropdownItems,
+} from "astro-navbar";
+---
+
+<Astronav closeOnClick>
+  <div
+    class="flex w-full justify-around items-center p-1 bg-gray-400 sticky top-0"
+  >
+    <a href=""><img src="/logo.svg" width="100" alt="logo" /></a>
+    <MenuItems
+      class="hidden md:flex md:static absolute top-16 w-full bg-gray-400 border-t-2 md:border-none md:w-min h-52 md:h-min"
+      transition:name="fade"
+    >
+      <ul class="flex flex-col md:flex-row gap-5 pt-5 pl-2 md:pt-0 md:pl-0">
+        <li><a href="#top">Home</a></li>
+        <li>Contact</li>
+        <li>
+          <Dropdown class="group">
+            <button class="flex items-center">
+              <span> About</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="3"
+                stroke="currentColor"
+                class="w-3 h-3 mt-0.5 group-open:rotate-180 transition-transform duration-300 ease-in-out"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M19.5 8.25l-7.5 7.5-7.5-7.5"></path>
+              </svg>
+            </button>
+            <DropdownItems class="relative">
+              <div class="absolute left-2">
+                <ul>
+                  <li>Services</li>
+                  <li>History</li>
+                  <li>Careers</li>
+                </ul>
+              </div>
+            </DropdownItems>
+          </Dropdown>
+        </li>
+      </ul>
+    </MenuItems>
+    <div>
+      <ul class="hidden md:flex">
+        <li><img src="./envelope.svg" alt="Email" /></li>
+        <li><img src="./geo-alt-fill.svg" alt="Address" /></li>
+        <li><img src="./telephone-fill.svg" alt="Phone" /></li>
+      </ul>
+    </div>
+    <div class="block md:hidden">
+      <MenuIcon class="w-6 h-6 text-gray-800" />
+    </div>
+  </div>
+</Astronav>
