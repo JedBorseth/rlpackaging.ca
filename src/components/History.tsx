@@ -6,17 +6,36 @@ interface Props {
 }
 const History = ({ title, subtitle }: Props) => {
   const [currentDate, setCurrentDate] = useState("");
-  useEffect(() => {
-    console.log(currentDate);
-  }, [currentDate]);
+
+  const historyItems = [
+    {
+      key: 1,
+      year: "1999",
+      description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.",
+    },
+    {
+      key: 2,
+      year: "2008",
+      description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.",
+    },
+    {
+      key: 3,
+      year: "2014",
+      description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.",
+    },
+  ];
+
   return (
     <section className="min-h-screen grid grid-rows-3">
       <div className="text-center">
         <h2 className="text-4xl">{title}</h2>
         <h3>{subtitle}</h3>
       </div>
-      <div className="w-3/4 h-32 justify-self-center overflow-x-auto overflow-y-hidden row-start-3 border">
-        <div className="w-[100rem] h-full relative">
+      <div className="w-3/4 h-32 justify-self-center overflow-x-scroll overflow-y-hidden row-start-3 border rounded shadow-lg">
+        <div className="w-[75rem] h-full relative">
           <HistoryItem
             xpos={25}
             year="1999"
@@ -34,7 +53,14 @@ const History = ({ title, subtitle }: Props) => {
           ></HistoryItem>
         </div>
       </div>
-      <div className="text-center">{currentDate}</div>
+      <div className="text-center">
+        {currentDate}
+        {historyItems.map((item) => {
+          if (item.year === currentDate) {
+            return <p key={item.key}>{item.description}</p>;
+          }
+        })}
+      </div>
       <span className="left-[25%] left-[50%] left-[80%] hidden content-none">
         {/* span is just to make sure tailwind generates classes */}
       </span>
@@ -50,12 +76,12 @@ interface HistoryItemProps {
 const HistoryItem = ({ xpos, year, setCurrentDate }: HistoryItemProps) => {
   return (
     <div
-      className={`w-20 h-20 rounded-full absolute left-[${xpos}%] top-auto flex justify-center items-center cursor-pointer border`}
+      className={`w-20 h-20 rounded-full absolute left-[${xpos}%] top-0 bottom-0 m-auto flex justify-center items-center cursor-pointer border shadow-xl`}
       onClick={() => {
         setCurrentDate(year);
       }}
     >
-      {year}
+      <h2>{year}</h2>
     </div>
   );
 };
