@@ -3,7 +3,23 @@ import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero.astro";
 import Services from "../components/Services.astro";
-import History from "../components/History.astro";
+import History from "../components/History";
+
+const service1 = {
+  title: "Item 1",
+  description:
+    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.",
+};
+const service2 = {
+  title: "Item 2",
+  description:
+    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.",
+};
+const service3 = {
+  title: "Item 3",
+  description:
+    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.",
+};
 ---
 
 <Layout title="R&L Packaging">
@@ -19,7 +35,14 @@ import History from "../components/History.astro";
     <Services
       title="Our Services"
       subtitle="Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quis aut voluptate ipsum quos molestiae, hic itaque, eaque dolorem vel facere odioillo nulla, delectus nobis ullam quia atque assumenda saepe."
+      item1={service1}
+      item2={service2}
+      item3={service3}
     />
-    <History title="hello world" />
+    <History
+      title="Our History"
+      subtitle="Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum quasi quisquam quod iusto qui quos voluptatem omnis, exercitationem veniam nostrum?"
+      client:visible
+    />
   </main>
 </Layout>
