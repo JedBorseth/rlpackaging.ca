@@ -31,7 +31,7 @@ const Navbar = () => {
           <a
             href="#home"
             onClick={() => {
-              setShowMenu(false);
+              if (width < 640) setShowMenu(false);
               window.scrollTo(0, 0);
             }}
           >

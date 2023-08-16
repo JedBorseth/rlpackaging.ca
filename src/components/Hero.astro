@@ -1,4 +1,10 @@
 ---
+interface Props {
+  title: string;
+  subtitle: string;
+}
+
+const { title, subtitle } = Astro.props;
 ---
 
 <section
@@ -6,10 +12,9 @@
   id="#home"
 >
   <div>
-    <h1 class="text-4xl">R&L Packaging</h1>
+    <h1 class="text-4xl">{title}</h1>
     <h2 class="md:pr-20">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis quo hic
-      officia. Cupiditate, autem et! Ducimus expedita natus debitis nam?
+      {subtitle}
     </h2>
   </div>
   <div>

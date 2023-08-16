@@ -2,6 +2,8 @@
 import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero.astro";
+import Services from "../components/Services.astro";
+import History from "../components/History.astro";
 ---
 
 <Layout title="R&L Packaging">
@@ -10,14 +12,14 @@ import Hero from "../components/Hero.astro";
   </header>
 
   <main>
-    <Hero />
-    <section class="">
-      <h2 class="text-4xl flex justify-center">Our Services</h2>
-      <h3 class="text-center">
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quis aut
-        voluptate ipsum quos molestiae, hic itaque, eaque dolorem vel facere
-        odio illo nulla, delectus nobis ullam quia atque assumenda saepe.
-      </h3>
-    </section>
+    <Hero
+      title="R&L Packaging"
+      subtitle="Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis quo hic officia. Cupiditate, autem et! Ducimus expedita natus debitis nam?"
+    />
+    <Services
+      title="Our Services"
+      subtitle="Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quis aut voluptate ipsum quos molestiae, hic itaque, eaque dolorem vel facere odioillo nulla, delectus nobis ullam quia atque assumenda saepe."
+    />
+    <History title="hello world" />
   </main>
 </Layout>
