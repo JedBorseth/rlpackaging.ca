@@ -1,13 +1,16 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Navbar from "../components/Navbar.astro";
+import Navbar from "../components/Navbar";
 import Hero from "../components/Hero.astro";
 ---
 
 <Layout title="R&L Packaging">
+  <header class="sticky top-0">
+    <Navbar client:load />
+  </header>
+
   <main>
-    <Navbar />
     <Hero />
-    <section></section>
+    <section class=""></section>
   </main>
 </Layout>
