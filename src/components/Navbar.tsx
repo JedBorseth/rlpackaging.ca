@@ -17,7 +17,7 @@ const Navbar = () => {
     setShowMenu(width > 640);
   }, [width]);
   return (
-    <nav className="w-full bg-gray-400 h-20 flex justify-between items-center">
+    <nav className="w-full bg-gray-400 h-20 flex justify-between items-center z-50">
       <a href="">
         <img src="./logo.svg" alt="" width="100" />
       </a>

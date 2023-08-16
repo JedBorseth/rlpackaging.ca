@@ -76,7 +76,7 @@ interface HistoryItemProps {
 const HistoryItem = ({ xpos, year, setCurrentDate }: HistoryItemProps) => {
   return (
     <div
-      className={`w-20 h-20 rounded-full absolute left-[${xpos}%] top-0 bottom-0 m-auto flex justify-center items-center cursor-pointer border shadow-xl`}
+      className={`w-20 h-20 rounded-full absolute left-[${xpos}%] top-0 bottom-0 m-auto flex justify-center items-center cursor-pointer border shadow-xl z-10`}
       onClick={() => {
         setCurrentDate(year);
       }}

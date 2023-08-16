@@ -43,7 +43,7 @@ const resend = new Resend(api_key);
   try {
     const data = await resend.emails.send({
       from: `${name} <onboarding@resend.dev>`,
-      to: ['delivered@resend.dev'],
+      to: ["jedborseth@gmail.com"],
       subject: `From: ${email}`,
       html: `<!DOCTYPE html>
       <html lang="en">
@@ -96,6 +96,12 @@ const resend = new Resend(api_key);
     console.log(data);
   } catch (error) {
     console.error(error);
+    return new Response(
+      JSON.stringify({
+        message: `Error: ${error}}`,
+      }),
+      { status: 500 }
+    );
   }
 })();
 

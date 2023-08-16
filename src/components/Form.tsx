@@ -17,20 +17,46 @@ export default function Form() {
   }
 
   return (
-    <form onSubmit={(e) => {submit(e)}}>
-      <label>
+    <form
+      onSubmit={(e) => {
+        submit(e);
+      }}
+      className="flex col-span-2 flex-col gap-5 sm:col-start-2 row-span-2 text-left"
+    >
+      <label className=" p-1 m-2 flex flex-col">
         Name
-        <input type="text" id="name" name="name" required />
+        <input
+          type="text"
+          id="name"
+          name="name"
+          required
+          placeholder="Enter your name..."
+          className="rounded shadow-lg p-1"
+        />
       </label>
-      <label>
+      <label className=" p-1 m-2 flex flex-col">
         Email
-        <input type="email" id="email" name="email" required />
+        <input
+          type="email"
+          id="email"
+          name="email"
+          required
+          placeholder="sample@example.com"
+          className="rounded shadow-lg p-1"
+        />
       </label>
-      <label>
+      <label className=" p-1 m-2 flex flex-col">
         Message
-        <textarea id="message" name="message" />
+        <textarea
+          id="message"
+          name="message"
+          placeholder="Type your message here..."
+          className="rounded shadow-lg p-1 min-h-[10rem]"
+        />
       </label>
-      <button>Send</button>
+      <button className="p-5 bg-[#ED1C24] w-1/2 place-self-center rounded hover:-translate-y-2 transition-all text-white">
+        Send
+      </button>
       {responseMessage && <p>{responseMessage}</p>}
     </form>
   );
