@@ -1,9 +1,9 @@
 import type { APIRoute } from "astro";
-import {z} from "zod";
-import { Resend } from 'resend';
+import { z } from "zod";
+import { Resend } from "resend";
 
 export const post: APIRoute = async ({ request }) => {
-    const api_key = "re_GahC8JBr_Gu4WseF9od9hDZB6kuUJHyEv";
+  const api_key = "re_GahC8JBr_Gu4WseF9od9hDZB6kuUJHyEv";
   const data = await request.formData();
   const name = data.get("name");
   const email = data.get("email");
@@ -17,35 +17,35 @@ export const post: APIRoute = async ({ request }) => {
       { status: 400 }
     );
   }
-    const schema = z.object({
+  const schema = z.object({
     name: z.string().min(1),
     email: z.string().email(),
     message: z.string().min(1),
-    });
-    try {
-    schema.parse({
-    name,
-    email,
-    message,
-    });
-    } catch (error) {
-    return new Response(
-    JSON.stringify({
-    message: "Invalid data",
-    }),
-    { status: 400 }
-    );
-}
-  
-const resend = new Resend(api_key);
-
-(async function () {
+  });
   try {
-    const data = await resend.emails.send({
-      from: `${name} <onboarding@resend.dev>`,
-      to: ["jedborseth@gmail.com"],
-      subject: `From: ${email}`,
-      html: `<!DOCTYPE html>
+    schema.parse({
+      name,
+      email,
+      message,
+    });
+  } catch (error) {
+    return new Response(
+      JSON.stringify({
+        message: "Invalid data",
+      }),
+      { status: 400 }
+    );
+  }
+
+  const resend = new Resend(api_key);
+
+  (async function () {
+    try {
+      const data = await resend.emails.send({
+        from: `${name} <onboarding@resend.dev>`,
+        to: ["jedborseth@gmail.com"],
+        subject: `From: ${email}`,
+        html: `<!DOCTYPE html>
       <html lang="en">
       <head>
       <meta charset="UTF-8">
@@ -86,29 +86,29 @@ const resend = new Resend(api_key);
         <div class="container">
           <h1>Website: ${name} - ${email}  </h1>
           <p>${message}</p>
-          <a href="https://rlpackaging.ca" class="button">Visit Website</a>
+          <a href="mailto:${email}" class="button">Reply</a>
         </div>
       </body>
       </html>
       `,
-    });
+      });
 
-    console.log(data);
-  } catch (error) {
-    console.error(error);
-    return new Response(
-      JSON.stringify({
-        message: `Error: ${error}}`,
-      }),
-      { status: 500 }
-    );
-  }
-})();
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+      return new Response(
+        JSON.stringify({
+          message: `Error: ${error}}`,
+        }),
+        { status: 500 }
+      );
+    }
+  })();
 
   console.log(`Feedback from ${name} <${email}>: ${message}`);
   return new Response(
     JSON.stringify({
-      message: "Success!"
+      message: "Success!",
     }),
     { status: 200 }
   );

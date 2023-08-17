@@ -31,7 +31,7 @@ export default function Form() {
           name="name"
           required
           placeholder="Enter your name..."
-          className="rounded shadow-lg p-1"
+          className="input input-bordered input-primary"
         />
       </label>
       <label className=" p-1 m-2 flex flex-col">
@@ -42,7 +42,7 @@ export default function Form() {
           name="email"
           required
           placeholder="sample@example.com"
-          className="rounded shadow-lg p-1"
+          className="input input-bordered input-primary"
         />
       </label>
       <label className=" p-1 m-2 flex flex-col">
@@ -51,10 +51,10 @@ export default function Form() {
           id="message"
           name="message"
           placeholder="Type your message here..."
-          className="rounded shadow-lg p-1 min-h-[10rem]"
+          className="textarea textarea-primary min-h-[10rem]"
         />
       </label>
-      <button className="p-5 bg-[#ED1C24] w-1/2 place-self-center rounded hover:-translate-y-2 transition-all text-white">
+      <button className="btn btn-primary rounded place-self-center hover:-translate-y-2 transition-all">
         Send
       </button>
       {responseMessage && <p>{responseMessage}</p>}

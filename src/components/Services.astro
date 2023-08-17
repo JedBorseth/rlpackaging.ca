@@ -19,26 +19,38 @@ interface Props {
 const { title, subtitle, item1, item2, item3 } = Astro.props;
 ---
 
-<section class="min-h-screen grid justify-items-center">
+<section class="min-h-screen grid justify-items-center" id="about">
   <div class="sm:col-span-3 self-center">
     <h2 class="text-4xl flex justify-center">{title}</h2>
     <h3 class="text-center">
       {subtitle}
     </h3>
   </div>
-  <article class="text-center px-3">
-    <h3 class="text-3xl">{item1.title}</h3><p>
-      {item1.description}
-    </p>
+  <article class="card bg-primary text-primary-content mx-5 h-min">
+    <div class="card-body">
+      <h2 class="card-title">{item1.title}</h2>
+      <p>{item1.description}</p>
+      <div class="card-actions justify-end">
+
+      </div>
+    </div>
   </article>
-  <article class="text-center px-3">
-    <h3 class="text-3xl">{item2.title}</h3><p>
-      {item2.description}
-    </p>
+  <article class="card bg-primary text-primary-content mx-5 h-min">
+    <div class="card-body">
+      <h2 class="card-title">{item2.title}</h2>
+      <p>{item2.description}</p>
+      <div class="card-actions justify-end">
+
+      </div>
+    </div>
   </article>
-  <article class="text-center px-3">
-    <h3 class="text-3xl">{item3.title}</h3><p>
-      {item3.description}
-    </p>
+  <article class="card bg-primary text-primary-content mx-5 h-min">
+    <div class="card-body">
+      <h2 class="card-title">{item3.title}</h2>
+      <p>{item3.description}</p>
+      <div class="card-actions justify-end">
+
+      </div>
+    </div>
   </article>
 </section>

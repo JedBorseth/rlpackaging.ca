@@ -17,7 +17,7 @@ const Navbar = () => {
     setShowMenu(width > 640);
   }, [width]);
   return (
-    <nav className="w-full bg-gray-400 h-20 flex justify-between items-center z-50">
+    <nav className="w-full bg-secondary h-20 flex justify-between items-center z-50">
       <a href="">
         <img src="./logo.svg" alt="" width="100" />
       </a>
@@ -39,13 +39,37 @@ const Navbar = () => {
           </a>
         </li>
         <li className="p-3 ">
-          <a href="#about">About</a>
+          <a
+            href="#about"
+            onClick={() => {
+              if (width < 640) setShowMenu(false);
+              window.scrollTo(0, 900);
+            }}
+          >
+            About
+          </a>
         </li>
         <li className="p-3 ">
-          <a href="#history">History</a>
+          <a
+            href="#history"
+            onClick={() => {
+              if (width < 640) setShowMenu(false);
+              window.scrollTo(0, 1600);
+            }}
+          >
+            History
+          </a>
         </li>
-        <li className="p-3 ">
-          <a href="#contact">Contact</a>
+        <li className="p-3">
+          <a
+            href="#contact"
+            onClick={() => {
+              if (width < 640) setShowMenu(false);
+              window.scrollTo(0, 2700);
+            }}
+          >
+            Contact
+          </a>
         </li>
       </ul>
       <ul className="sm:flex hidden">

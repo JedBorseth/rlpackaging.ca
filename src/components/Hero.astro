@@ -8,19 +8,20 @@ const { title, subtitle } = Astro.props;
 ---
 
 <section
-  class="grid sm:grid-cols-2 h-screen items-center p-5 grid-cols-1"
-  id="#home"
+  class="hero min-h-screen bg-base-200"
+  
 >
-  <div>
-    <h1 class="text-4xl">{title}</h1>
-    <h2 class="md:pr-20">
-      {subtitle}
-    </h2>
+  <div class="hero-content flex-col sm:flex-row-reverse row-span-2">
+    <img src="./logo.svg" class="max-w-sm rounded-lg shadow-2xl" />
+    <div>
+      <h1 class="text-5xl font-bold">R&L Packaging</h1>
+      <p class="py-6">Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.</p>
+      <button class="btn btn-primary">Learn More!</button>
+    </div>
   </div>
-  <div>
-    <img src="./logo.svg" alt="replace this!!" width="300" />
-  </div>
-  <div class="sm:col-span-2 justify-self-center">
-    <img src="./arrow-down-circle-fill.svg" alt="down" class="w-5 h-5" />
+  <div class="flex justify-center row-start-3">
+    <img src="./arrow-down-circle-fill.svg" alt="down" class="p-10 cursor-pointer fill-white" id="down-arrow" />
+    <script>document.querySelector("#down-arrow").addEventListener("click", () => {window.scrollTo(0, 900)})</script>
   </div>
 </section>
+

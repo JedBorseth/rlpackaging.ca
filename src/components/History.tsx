@@ -29,10 +29,10 @@ const History = ({ title, subtitle }: Props) => {
   ];
 
   return (
-    <section className="min-h-screen grid grid-rows-3">
-      <div className="text-center">
-        <h2 className="text-4xl">{title}</h2>
-        <h3>{subtitle}</h3>
+    <section className="min-h-screen grid grid-rows-3 bg-base-200" id="history">
+      <div className="text-center mt-5">
+        <h2 className="text-5xl">{title}</h2>
+        <h3 className="px-5">{subtitle}</h3>
       </div>
       <div className="w-3/4 h-32 justify-self-center overflow-x-scroll overflow-y-hidden row-start-3 border rounded shadow-lg">
         <div className="w-[75rem] h-full relative">
