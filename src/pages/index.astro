@@ -6,6 +6,8 @@ import Services from "../components/Services.astro";
 import History from "../components/History";
 import Contact from "../components/Contact.astro";
 
+const date = new Date().getFullYear();
+
 const service1 = {
   title: "Item 1",
   description:
@@ -48,4 +50,15 @@ const service3 = {
     />
     <Contact />
   </main>
+  <footer class="footer footer-center p-10 bg-base-200 text-base-content rounded">
+    <div class="grid grid-flow-col gap-4">
+      <a class="link link-hover home-scroll">Home</a> 
+      <a class="link link-hover about-scroll">About</a> 
+      <a class="link link-hover history-scroll">History</a> 
+      <a class="link link-hover contact-scroll">Contact</a>
+    </div> 
+    <div>
+      <p>Copyright © {date} - All right reserved by R&L Packaging</p>
+    </div>
+  </footer>
 </Layout>

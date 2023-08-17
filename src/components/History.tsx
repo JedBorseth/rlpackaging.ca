@@ -35,7 +35,7 @@ const History = ({ title, subtitle }: Props) => {
         <h3 className="px-5">{subtitle}</h3>
       </div>
       <div className="w-3/4 h-32 justify-self-center overflow-x-scroll overflow-y-hidden row-start-3 border rounded shadow-lg">
-        <div className="w-[75rem] h-full relative">
+        <div className="w-[200vw] h-full relative">
           <HistoryItem
             xpos={25}
             year="1999"

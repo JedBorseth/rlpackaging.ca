@@ -15,10 +15,10 @@
         
         <div class="flex-none hidden md:block">
           <ul class="menu menu-horizontal">
-            <li><a>Home</a></li>
-            <li><a>About</a></li>
-            <li><a>History</a></li>
-            <li><a>Contact</a></li>
+            <li><a class="home-scroll">Home</a></li>
+            <li><a class="about-scroll">About</a></li>
+            <li><a class="history-scroll">History</a></li>
+            <li><a class="contact-scroll">Contact</a></li>
           </ul>
         </div>
       </div>
@@ -26,10 +26,10 @@
     <div class="drawer-side">
       <label for="mobile-nav" class="drawer-overlay"></label> 
       <ul class="menu p-4 w-72 h-full bg-base-100" id="mobile-items">
-        <li><a href="#about" onclick="">Home</a></li>
-        <li><a>About</a></li>
-        <li><a>History</a></li>
-        <li><a>Contact</a></li>
+        <li><a class="home-scroll">Home</a></li>
+        <li><a class="about-scroll">About</a></li>
+        <li><a class="history-scroll">History</a></li>
+        <li><a class="contact-scroll">Contact</a></li>
         <li class="menu-title flex flex-row">
             <img src="./envelope.svg" alt="Email" />
             <img src="./telephone-fill.svg" alt="Email" />
@@ -39,3 +39,10 @@
       
     </div>
   </div>
+  <script>
+    document.querySelectorAll(".home-scroll").forEach((link) => {link.addEventListener("click", () => {window.scrollTo(0,0)})})
+    document.querySelectorAll(".about-scroll").forEach((link) => {link.addEventListener("click", () => {document.querySelector("#about")?.scrollIntoView({block: "center"})})})
+    document.querySelectorAll(".history-scroll").forEach((link) => {link.addEventListener("click", () => {document.querySelector("#history")?.scrollIntoView({block: "center"})})})
+    document.querySelectorAll(".contact-scroll").forEach((link) => {link.addEventListener("click", () => {document.querySelector("#contact")?.scrollIntoView({block: "center"})})})
+
+  </script>
