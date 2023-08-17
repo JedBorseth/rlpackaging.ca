@@ -8,8 +8,6 @@ import vercel from "@astrojs/vercel/serverless";
 export default defineConfig({
   integrations: [tailwind(), react()],
   experimental: {
-    viewTransitions: true
+    viewTransitions: true,
   },
-  output: "server",
-  adapter: vercel()
 });
