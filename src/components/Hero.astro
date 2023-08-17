@@ -16,12 +16,15 @@ const { title, subtitle } = Astro.props;
     <div>
       <h1 class="text-5xl font-bold">R&L Packaging</h1>
       <p class="py-6">Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.</p>
-      <button class="btn btn-primary">Learn More!</button>
+      <button class="btn btn-primary" id="learn-more">Learn More!</button>
     </div>
   </div>
   <div class="flex justify-center row-start-3">
     <img src="./arrow-down-circle-fill.svg" alt="down" class="p-10 cursor-pointer fill-white" id="down-arrow" />
-    <script>document.querySelector("#down-arrow").addEventListener("click", () => {window.scrollTo(0, 900)})</script>
+    <script>
+    document.querySelector("#down-arrow").addEventListener("click", () => {window.scrollTo(0, 900)})
+    document.querySelector("#learn-more").addEventListener("click", () => {window.scrollTo(0, 1000)})
+    </script>
   </div>
 </section>
 
