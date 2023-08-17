@@ -1,10 +1,7 @@
 # THINGS TO DO
 
 - Change REsend domain to come from rlpackage
-- Styling on everything
-- Google maps api
-- Footer and navigation
 - Set Vercel domain stuff
-
-- DaisyUI to make things look better
--
+- Google maps api and map stuff
+- Google Business Account description and images
+- RECaptcha setup for email form

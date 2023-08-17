@@ -1,5 +1,5 @@
 ---
-
+const maps_key = "AIzaSyCBINBUPEQ-HAJN0JyrUl6lzk7BA2sPMyM"
 import Form from './Form'
 ---
 
@@ -14,6 +14,7 @@ import Form from './Form'
     <h2 class="p-4">Call us at <span class="text-primary">604-758-6040</span></h2>
     <h2 class="p-4">Visit us at <span class="text-primary">30945 Wheel Avenue, Abbotsford, B.C.</span></h2>
     <h2 class="p-4">Or fill out the form below!</h2>
+    
     <script>
         document.querySelectorAll('#contact-info span').forEach((item) => {item.addEventListener('click', () => {
             navigator.clipboard.writeText(item.innerText).then(() => {
