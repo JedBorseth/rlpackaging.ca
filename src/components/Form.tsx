@@ -54,7 +54,12 @@ export default function Form() {
           className="textarea textarea-primary min-h-[10rem]"
         />
       </label>
-      <button className="btn btn-primary rounded place-self-center hover:-translate-y-2 transition-all">
+      <button
+        className="btn btn-primary rounded place-self-center hover:-translate-y-2 transition-all"
+        data-sitekey="6LcMH7QnAAAAADn39cJqVnr9wFqZCKhVBO2Ll1RW"
+        data-callback="onSubmit"
+        data-action="submit"
+      >
         Send
       </button>
       {responseMessage && <p>{responseMessage}</p>}

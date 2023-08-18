@@ -24,6 +24,12 @@ import { ViewTransitions } from "astro:transitions";
       html {
         scroll-behavior: smooth;
       }
+      .scrollbar-hide {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        overflow-y: scroll;
+        overflow-x: hidden;
+      }
     </style>
   </body>
 </html>

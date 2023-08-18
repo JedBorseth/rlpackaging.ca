@@ -6,22 +6,22 @@ import Services from "../components/Services.astro";
 import History from "../components/History";
 import Contact from "../components/Contact.astro";
 
-const date = new Date().getFullYear();
+const date = new Date();
 
 const service1 = {
-  title: "Item 1",
+  title: "Assembling and Manual Labour Services",
   description:
-    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.",
+  "Wine partitions, box separators and intricate die cut items can be difficult to handle when it comes to small volume. Our team of assemblers and general labours can handle orders of any size. From 1 box to a 1 truck load.",
 };
 const service2 = {
-  title: "Item 2",
+  title: "Custom Die Cutting",
   description:
-    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.",
+  "From regular flat bed to mini rotary and large rotary die cutting. We have the capability of handling almost all types of material and sizes.",
 };
 const service3 = {
-  title: "Item 3",
+  title: "Small to medium Volume boxes",
   description:
-    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.",
+  "Is your Stock box not quite right? All sorts of shapes and sizes with no minimum requirement and 4 Color printing capability.",
 };
 ---
 
@@ -37,7 +37,7 @@ const service3 = {
     />
   
     <Services
-      title="Our Services"
+      title="Our Unique Abilities"
       subtitle="Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quis aut voluptate ipsum quos molestiae, hic itaque, eaque dolorem vel facere odioillo nulla, delectus nobis ullam quia atque assumenda saepe."
       item1={service1}
       item2={service2}
@@ -58,7 +58,7 @@ const service3 = {
       <a class="link link-hover contact-scroll">Contact</a>
     </div> 
     <div>
-      <p>Copyright © {date} - All right reserved by R&L Packaging</p>
+      <p>Copyright © {date.getFullYear()} - All right reserved by R&L Packaging</p>
     </div>
   </footer>
 </Layout>
