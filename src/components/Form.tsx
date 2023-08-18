@@ -2,7 +2,6 @@ import { useState } from "react";
 
 export default function Form() {
   const [responseMessage, setResponseMessage] = useState("");
-
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
@@ -11,6 +10,14 @@ export default function Form() {
       body: formData,
     });
     const data = await response.json();
+    if (data.sent) {
+      setResponseMessage("Thank you for your feedback!");
+      setTimeout(() => {
+        setResponseMessage("");
+        // @ts-ignore
+        e.target.reset();
+      }, 5000);
+    }
     if (data.message) {
       setResponseMessage(data.message);
     }

@@ -43,7 +43,7 @@ export const post: APIRoute = async ({ request }) => {
     try {
       const data = await resend.emails.send({
         from: `${name} <onboarding@resend.dev>`,
-        to: ["jedborseth@gmail.com", "mcborseth@gmail.com"],
+        to: ["jedborseth@gmail.com"],
         subject: `From: ${email}`,
         html: `<html lang="en">
         <head>
@@ -69,10 +69,16 @@ export const post: APIRoute = async ({ request }) => {
             .button {
               display: inline-block;
               padding: 10px 20px;
-              background-color: #1d4f82;
-              color: #ffffff;
+              background-color: #ffffff;
+              color: #000000;
               text-decoration: none;
               border-radius: 3px;
+            }
+            h1 {
+              color: #ffffff;
+            }
+            p {
+              color: #ffffff;
             }
           </style>
         </head>
@@ -102,7 +108,7 @@ export const post: APIRoute = async ({ request }) => {
   console.log(`Feedback from ${name} <${email}>: ${message}`);
   return new Response(
     JSON.stringify({
-      message: "Success!",
+      sent: true,
     }),
     { status: 200 }
   );
