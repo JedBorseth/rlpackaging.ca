@@ -11,7 +11,9 @@ export default function Form() {
     });
     const data = await response.json();
     if (data.sent) {
-      setResponseMessage("Thank you for your feedback!");
+      setResponseMessage(
+        "Thank you for the message! We'll get back to you as soon as possible."
+      );
       setTimeout(() => {
         setResponseMessage("");
         // @ts-ignore

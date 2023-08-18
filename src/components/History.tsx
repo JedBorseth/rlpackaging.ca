@@ -9,7 +9,7 @@ const History = ({ title, subtitle }: Props) => {
   const ref =
     useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
   const { events } = useDraggable(ref);
-  const [value, setValue] = useState("Humbly Confident");
+  const [value, setValue] = useState("Team Player");
 
   const historyItems = [
     {
