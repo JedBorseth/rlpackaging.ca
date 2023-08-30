@@ -81,7 +81,7 @@ interface HistoryItemProps {
 const HistoryItem = ({ title, setValue }: HistoryItemProps) => {
   return (
     <div
-      className={`w-28 h-28 rounded-full flex justify-center items-center cursor-pointer border shadow-xl z-10 text-center bg-primary-focus hover:bg-primary`}
+      className={`w-28 h-28 rounded-full flex justify-center items-center cursor-pointer border shadow-xl z-10 text-center bg-primary-focus hover:bg-primary m-1`}
       onClick={() => {
         setValue(title);
       }}
