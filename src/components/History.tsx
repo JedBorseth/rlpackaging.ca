@@ -50,7 +50,7 @@ const History = ({ title }: Props) => {
         className="w-3/4 h-32 justify-self-center row-start-3 border rounded shadow-lg"
         ref={ref}
       >
-        <div className="h-full relative">
+        <div className="h-full flex justify-evenly">
           {historyItems.map((item) => {
             return (
               <HistoryItem
@@ -81,7 +81,7 @@ interface HistoryItemProps {
 const HistoryItem = ({ title, setValue }: HistoryItemProps) => {
   return (
     <div
-      className={`w-28 h-28 rounded-full top-0 bottom-0 m-auto flex justify-center items-center cursor-pointer border shadow-xl z-10 text-center bg-primary-focus hover:bg-primary`}
+      className={`w-28 h-28 rounded-full flex justify-center items-center cursor-pointer border shadow-xl z-10 text-center bg-primary-focus hover:bg-primary`}
       onClick={() => {
         setValue(title);
       }}
