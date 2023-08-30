@@ -6,7 +6,7 @@ interface Props {
 const History = ({ title }: Props) => {
   const ref =
     useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
-  const [value, setValue] = useState("Team Player");
+  const [value, setValue] = useState("Humbly Confident");
 
   const historyItems = [
     {
