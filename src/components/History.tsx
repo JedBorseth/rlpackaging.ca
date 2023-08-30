@@ -42,15 +42,15 @@ const History = ({ title }: Props) => {
   ];
 
   return (
-    <section className="min-h-screen grid grid-rows-3 bg-base-200" id="history">
+    <section className="min-h-screen grid grid-rows-3 bg-base-200 place-items-center" id="history">
       <div className="text-center mt-5">
         <h2 className="text-5xl">{title}</h2>
       </div>
       <div
-        className="w-3/4 h-32 justify-self-center row-start-3 border rounded shadow-lg"
+        className="w-3/4 h-fit justify-self-center row-start-3 border rounded shadow-lg"
         ref={ref}
       >
-        <div className="h-full flex justify-evenly">
+        <div className="h-full flex justify-evenly flex-wrap">
           {historyItems.map((item) => {
             return (
               <HistoryItem
