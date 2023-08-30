@@ -3,7 +3,7 @@ import { z } from "zod";
 import { Resend } from "resend";
 
 export const post: APIRoute = async ({ request }) => {
-  const api_key = "re_GahC8JBr_Gu4WseF9od9hDZB6kuUJHyEv";
+  const api_key = process.env.RESEND_KEY;
   const data = await request.formData();
   const name = data.get("name");
   const email = data.get("email");
@@ -107,9 +107,7 @@ export const post: APIRoute = async ({ request }) => {
 
   console.log(`Feedback from ${name} <${email}>: ${message}`);
   return new Response(
-    JSON.stringify({
-      sent: true,
-    }),
+    data,
     { status: 200 }
   );
 };
