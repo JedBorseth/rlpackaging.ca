@@ -14,8 +14,8 @@ const { title, subtitle } = Astro.props;
   <div class="hero-content flex-col sm:flex-row-reverse row-span-2">
     <img src="./logo.svg" class="max-w-sm rounded-lg shadow-2xl" />
     <div>
-      <h1 class="text-5xl font-bold">R&L Packaging</h1>
-      <p class="py-6">Solution Focused on difficult projects for your packaging needs. We do our best to help in areas where no one else can. With no minimums and a support mentality, we are the partner to the small business, distributor, and packaging manufacturer.</p>
+      <h1 class="text-5xl font-bold">{title}</h1>
+      <p class="py-6">{subtitle}</p>
       <button class="btn btn-primary" id="learn-more">Learn More</button>
     </div>
   </div>

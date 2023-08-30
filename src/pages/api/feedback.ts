@@ -43,7 +43,7 @@ export const post: APIRoute = async ({ request }) => {
     try {
       const data = await resend.emails.send({
         from: `${name} <onboarding@resend.dev>`,
-        to: ["jedborseth@gmail.com"],
+        to: ["orders@rlpackaging.ca"],
         subject: `From: ${email}`,
         html: `<html lang="en">
         <head>

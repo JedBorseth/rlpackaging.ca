@@ -1,7 +1,6 @@
 ---
 interface Props {
   title: string;
-  subtitle: string;
   item1: {
     title: string;
     description: string;
@@ -16,15 +15,12 @@ interface Props {
   };
 }
 
-const { title, subtitle, item1, item2, item3 } = Astro.props;
+const { title, item1, item2, item3 } = Astro.props;
 ---
 
 <section class="min-h-screen grid justify-items-center" id="about">
   <div class="sm:col-span-3 self-center">
     <h2 class="text-4xl flex justify-center">{title}</h2>
-    <h3 class="text-center">
-      {subtitle}
-    </h3>
   </div>
   <article class="card bg-primary text-primary-content mx-5 h-min">
     <div class="card-body">

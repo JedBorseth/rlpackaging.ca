@@ -1,48 +1,40 @@
-import { useEffect, useRef, useState } from "react";
-import { useDraggable } from "react-use-draggable-scroll";
+import { useRef, useState } from "react";
 
 interface Props {
   title: string;
-  subtitle: string;
 }
-const History = ({ title, subtitle }: Props) => {
+const History = ({ title }: Props) => {
   const ref =
     useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
-  const { events } = useDraggable(ref);
   const [value, setValue] = useState("Team Player");
 
   const historyItems = [
     {
       key: 1,
-      pos: 20,
       title: "Humbly Confident",
       description:
         "Know your stuff, with also the realization that there is something going on that you may not fully understand or realize. We all need to realize everyone is not perfect and we need to give each other grace when a mistake is made. We all succeed and fail as a TEAM",
     },
     {
       key: 2,
-      pos: 40,
       title: "Team Player",
       description:
         "We all succeed and fail as a TEAM. When we work together, we work to help each other and not leave our team members needing help.  Every team member does their part in the work and talks to each other with appreciation and respect.  When we work as a team, it shows each person that we are all INVESTED.",
     },
     {
       key: 3,
-      pos: 60,
       title: "Invested",
       description:
         "When we care about the products that we are creating and doing the best we can for our customers, they notice. We all put our best foot forward each day and do our best to work hard, making quality products, taking care of the equipment that we use and making sure we pay attention to the DETAILS.",
     },
     {
       key: 4,
-      pos: 80,
       title: "Attention to Detail",
       description:
         "The products that we produce are not particularly complex or difficult to make, however, at times our customers have specific requirements. We need to be able to look at the purchase order or work order document to determine what the customer requires so that they get exactly what they ask for. There will be times where the requests or documentation is a little unclear. This is where we need to work as a team to find a SOLUTION.",
     },
     {
       key: 5,
-      pos: 100,
       title: "Solutions Focused",
       description:
         "There is nothing at R&L that is beyond improvement. EVER. Whether it be management or production processes, we must always strive for implementation of new ideas and strategies that assist in making quality and efficiencies better and more consistent. All ideas will be welcomed and considered. We are ALL part of the same team.",
@@ -53,20 +45,17 @@ const History = ({ title, subtitle }: Props) => {
     <section className="min-h-screen grid grid-rows-3 bg-base-200" id="history">
       <div className="text-center mt-5">
         <h2 className="text-5xl">{title}</h2>
-        <h3 className="px-5">{subtitle}</h3>
       </div>
       <div
-        className="w-3/4 h-32 justify-self-center overflow-x-scroll overflow-y-hidden row-start-3 border rounded shadow-lg scrollbar-hide"
+        className="w-3/4 h-32 justify-self-center row-start-3 border rounded shadow-lg"
         ref={ref}
-        {...events}
       >
-        <div className="w-[200vw] h-full relative scrollbar-hide">
+        <div className="h-full relative">
           {historyItems.map((item) => {
             return (
               <HistoryItem
                 title={item.title}
                 setValue={setValue}
-                xpos={item.pos}
                 key={item.key}
               />
             );
@@ -81,22 +70,18 @@ const History = ({ title, subtitle }: Props) => {
           }
         })}
       </div>
-      <span className="left-[20%] left-[40%] left-[60%] left-[80%] left-[100%] hidden content-none">
-        {/* span is just to make sure tailwind generates classes */}
-      </span>
     </section>
   );
 };
 interface HistoryItemProps {
-  xpos: number;
   title: string;
   setValue: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const HistoryItem = ({ xpos, title, setValue }: HistoryItemProps) => {
+const HistoryItem = ({ title, setValue }: HistoryItemProps) => {
   return (
     <div
-      className={`w-28 h-28 rounded-full absolute left-[${xpos}%] top-0 bottom-0 m-auto flex justify-center items-center cursor-pointer border shadow-xl z-10 text-center bg-primary-focus hover:bg-primary`}
+      className={`w-28 h-28 rounded-full top-0 bottom-0 m-auto flex justify-center items-center cursor-pointer border shadow-xl z-10 text-center bg-primary-focus hover:bg-primary`}
       onClick={() => {
         setValue(title);
       }}
