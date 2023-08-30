@@ -84,6 +84,7 @@ const HistoryItem = ({ title, setValue }: HistoryItemProps) => {
       className={`w-28 h-28 rounded-full flex justify-center items-center cursor-pointer border shadow-xl z-10 text-center bg-primary-focus hover:bg-primary m-1`}
       onClick={() => {
         setValue(title);
+        document.querySelector("#history")?.scrollIntoView({block: "center"})
       }}
     >
       <h2>{title}</h2>
