@@ -12,32 +12,30 @@ const History = ({ title }: Props) => {
     {
       key: 1,
       title: "Humbly Confident",
-      description:
-        "Know your stuff, with also the realization that there is something going on that you may not fully understand or realize. We all need to realize everyone is not perfect and we need to give each other grace when a mistake is made. We all succeed and fail as a TEAM",
-    },
+      description: "We believe in embracing challenges, learning from every experience, and always seeking ways to enhance what we offer you. Our confidence stems from a deep understanding of our capabilities, but it is rooted in a humility that reminds us there is always room to grow. Our dedication to your satisfaction drives us to innovate and adapt while maintaining a steadfast commitment to quality. It's our way of showing you that we're passionate about what we do and dedicated to delivering the best possible results. Rest assured, we approach every task with a sense of responsibility and respect for your trust in us. We listen, we learn, and we evolve, always with your best interests in mind."},
     {
       key: 2,
       title: "Team Player",
       description:
-        "We all succeed and fail as a TEAM. When we work together, we work to help each other and not leave our team members needing help.  Every team member does their part in the work and talks to each other with appreciation and respect.  When we work as a team, it shows each person that we are all INVESTED.",
+        "At our core, we believe in the power of collaboration and partnership. We're dedicated to fostering close working relationships with our clients, taking the time to truly understand their objectives, and customizing our solutions to suit their individual needs. Your success is our shared goal, and we're committed to working hand-in-hand with you every step of the way to achieve it.",
     },
     {
       key: 3,
       title: "Invested",
       description:
-        "When we care about the products that we are creating and doing the best we can for our customers, they notice. We all put our best foot forward each day and do our best to work hard, making quality products, taking care of the equipment that we use and making sure we pay attention to the DETAILS.",
+      "Investment in your vision is our driving force. We're deeply committed to understanding your goals and aligning our resources and expertise to support your unique vision. Your success is our investment, and we're dedicated to partnering with you, providing the insights and resources needed to help your ideas grow and thrive.",
     },
     {
       key: 4,
       title: "Attention to Detail",
       description:
-        "The products that we produce are not particularly complex or difficult to make, however, at times our customers have specific requirements. We need to be able to look at the purchase order or work order document to determine what the customer requires so that they get exactly what they ask for. There will be times where the requests or documentation is a little unclear. This is where we need to work as a team to find a SOLUTION.",
+      "Precision is our hallmark. We meticulously scrutinize every detail, ensuring that nothing is overlooked. Our commitment to thoroughness and a meticulous approach is woven into the fabric of our work, assuring you that your project or task is executed with the utmost care and attention to even the smallest of particulars.",
     },
     {
       key: 5,
       title: "Solutions Focused",
       description:
-        "There is nothing at R&L that is beyond improvement. EVER. Whether it be management or production processes, we must always strive for implementation of new ideas and strategies that assist in making quality and efficiencies better and more consistent. All ideas will be welcomed and considered. We are ALL part of the same team.",
+      "At our core, we're driven by the pursuit of solutions. We approach challenges with a forward-thinking mindset, seeking innovative paths to overcome obstacles and deliver results. Our dedication to being solution-focused means we're always ready to tackle your unique challenges head-on, providing you with effective answers and strategies to propel your goals forward.",
     },
   ];
 
