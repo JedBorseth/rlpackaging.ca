@@ -12,7 +12,9 @@ const History = ({ title }: Props) => {
     {
       key: 1,
       title: "Humbly Confident",
-      description: "We believe in embracing challenges, learning from every experience, and always seeking ways to enhance what we offer you. Our confidence stems from a deep understanding of our capabilities, but it is rooted in a humility that reminds us there is always room to grow. Our dedication to your satisfaction drives us to innovate and adapt while maintaining a steadfast commitment to quality. It's our way of showing you that we're passionate about what we do and dedicated to delivering the best possible results. Rest assured, we approach every task with a sense of responsibility and respect for your trust in us. We listen, we learn, and we evolve, always with your best interests in mind."},
+      description:
+        "We believe in embracing challenges, learning from every experience, and always seeking ways to enhance what we offer you. Our confidence stems from a deep understanding of our capabilities, but it is rooted in a humility that reminds us there is always room to grow. We are not immune to mistakes, rather our dedication to your satisfaction drives us to innovate and adapt while maintaining a steadfast commitment to quality. It's our way of showing you that we're passionate about what we do and dedicated to delivering the best possible results. Rest assured, we approach every task with a sense of responsibility and respect for your trust in us. We listen, we learn, and we evolve, always with your best interests in mind.",
+    },
     {
       key: 2,
       title: "Team Player",
@@ -23,24 +25,27 @@ const History = ({ title }: Props) => {
       key: 3,
       title: "Invested",
       description:
-      "Investment in your vision is our driving force. We're deeply committed to understanding your goals and aligning our resources and expertise to support your unique vision. Your success is our investment, and we're dedicated to partnering with you, providing the insights and resources needed to help your ideas grow and thrive.",
+        "Investment in your vision is our driving force. We're deeply committed to understanding your goals and aligning our resources and expertise to support your unique vision. Your success is our investment, and we're dedicated to partnering with you, providing the insights and resources needed to help your ideas grow and thrive.",
     },
     {
       key: 4,
       title: "Attention to Detail",
       description:
-      "Precision is our hallmark. We meticulously scrutinize every detail, ensuring that nothing is overlooked. Our commitment to thoroughness and a meticulous approach is woven into the fabric of our work, assuring you that your project or task is executed with the utmost care and attention to even the smallest of particulars.",
+        "Details are the building blocks of excellence, and we understand their importance. We approach your project with a keen eye for detail, thoroughly examining every component to guarantee that the final outcome is nothing short of excellence.",
     },
     {
       key: 5,
       title: "Solutions Focused",
       description:
-      "At our core, we're driven by the pursuit of solutions. We approach challenges with a forward-thinking mindset, seeking innovative paths to overcome obstacles and deliver results. Our dedication to being solution-focused means we're always ready to tackle your unique challenges head-on, providing you with effective answers and strategies to propel your goals forward.",
+        "At our core, we're driven by the pursuit of solutions. We approach challenges with a forward-thinking mindset, seeking innovative paths to overcome obstacles and deliver results. Our dedication to being solution-focused means we're always ready to tackle your unique challenges head-on, providing you with effective answers and strategies to propel your goals forward.",
     },
   ];
 
   return (
-    <section className="min-h-screen grid grid-rows-3 bg-base-200 place-items-center" id="history">
+    <section
+      className="min-h-screen grid grid-rows-3 bg-base-200 place-items-center"
+      id="history"
+    >
       <div className="text-center mt-5">
         <h2 className="text-5xl">{title}</h2>
       </div>
@@ -82,7 +87,7 @@ const HistoryItem = ({ title, setValue }: HistoryItemProps) => {
       className={`w-28 h-28 rounded-full flex justify-center items-center cursor-pointer border shadow-xl z-10 text-center bg-primary-focus hover:bg-primary m-1`}
       onClick={() => {
         setValue(title);
-        document.querySelector("#history")?.scrollIntoView({block: "center"})
+        document.querySelector("#history")?.scrollIntoView({ block: "center" });
       }}
     >
       <h2>{title}</h2>
