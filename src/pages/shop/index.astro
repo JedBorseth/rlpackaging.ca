@@ -1,0 +1,60 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import { Client, Environment } from "square";
+
+const date = new Date();
+
+const client = await new Client({
+  accessToken: import.meta.env.SQUARE_ACCESS_TOKEN,
+  environment: Environment.Production,
+});
+const response = await client.catalogApi.searchCatalogItems({});
+if (response.result.items) {
+  console.log(response.result.items[0]);
+} else {
+  return;
+}
+const items = response.result.items;
+---
+
+<Layout title="R&L Packaging">
+  <header class="sticky top-0 z-50">
+    <Navbar />
+  </header>
+  <main>
+    <div class="flex flex-wrap gap-10 p-20">
+      {
+        items &&
+          items.map((item) => {
+            return (
+              <div class="w-1/4 bg-blue-400 h-36 flex rounded shadow-2xl flex-wrap">
+                <h2 class="w-full text-center">{item.itemData?.name}</h2>
+                <p>{item.itemData?.description}</p>
+                <a class="btn" href="/shop/test">Buy</a>
+              </div>
+            );
+          })
+      }
+    </div>
+  </main>
+
+  <footer
+    class="footer footer-center p-10 bg-base-200 text-base-content rounded"
+  >
+    <div class="grid grid-flow-col gap-4">
+      <a class="link link-hover home-scroll">Home</a>
+      <a class="link link-hover about-scroll">About</a>
+      <a class="link link-hover history-scroll">History</a>
+      <a class="link link-hover contact-scroll">Contact</a>
+    </div>
+    <div>
+      <p>
+        Copyright © {date.getFullYear()} - All right reserved by R&L Packaging
+      </p>
+      <p class="text-xs">
+        Website designed by <a href="https://jedborseth.com">Jed Borseth</a>
+      </p>
+    </div>
+  </footer>
+</Layout>
