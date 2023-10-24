@@ -1,9 +1,10 @@
 ---
-import Layout from "../../layouts/Layout.astro";
-import Navbar from "../../components/Navbar.astro";
-import type { retrieveCatalogTypes } from "../../squareTypes";
-// @ts-ignore
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import type { retrieveCatalogTypes } from "../squareTypes";
+// @ts-ignore - Im upset there isnt any types for this
 import { Client, Environment } from "square";
+import type { SearchCatalogTypes } from "../squareTypes";
 
 const date = new Date();
 
@@ -17,13 +18,12 @@ const client = await new Client({
 });
 const getItem = async () => {
   try {
-    if (Astro.params.item?.includes("svg")) return;
     const response = await client.catalogApi.retrieveCatalogObject(
-      Astro.params.item
+      Astro.url.searchParams.get("id")
     );
     return response.result;
   } catch (error: any) {
-    console.error(error);
+    console.log(error);
     return new Response(error, { status: 500 });
   }
 };
@@ -32,13 +32,42 @@ const response: retrieveCatalogTypes = await getItem();
 if (!response) return Astro.redirect("/shop");
 if (response.object?.itemData?.imageIds === undefined)
   return Astro.redirect("/shop");
-const fetchImage = await client.catalogApi.retrieveCatalogObject(
-  response.object?.itemData?.imageIds[0]
-);
-const imageUrl = fetchImage.result.object?.imageData?.url;
-const inventoryCount = await client.inventoryApi.retrieveInventoryCount(
-  response.object.itemData?.variations[0].id,
-  "LT6VCG48B673C"
+
+const params = Astro.url.searchParams;
+
+const clearLinks = async () => {
+  try {
+    const allLinks = await client.checkoutApi.listPaymentLinks();
+    if (!allLinks.result.paymentLinks) return console.log("No Links");
+    allLinks.result.paymentLinks.forEach(async (link: { id: string }) => {
+      await client.checkoutApi.deletePaymentLink(link.id);
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const generateLink = async (id: string) => {
+  try {
+    const response = await client.checkoutApi.createPaymentLink({
+      order: {
+        locationId: "LT6VCG48B673C",
+        lineItems: [
+          {
+            quantity: Astro.url.searchParams.get("quantity"),
+            catalogObjectId: id,
+          },
+        ],
+      },
+    });
+    return response.result.paymentLink.url;
+    console.log(response.result);
+  } catch (error) {
+    console.log(error);
+  }
+};
+const link: string = await generateLink(
+  response.object.itemData.variations[0].id
 );
 ---
 
@@ -47,26 +76,9 @@ const inventoryCount = await client.inventoryApi.retrieveInventoryCount(
     <Navbar />
   </header>
   <main class="min-h-screen">
-    <h1 class="text-3xl text-center">
-      {response.object?.itemData.name}
-    </h1>
-    <div class="flex flex-wrap">
-      <img src={imageUrl} alt="Product Image" />
-      <p>Stock: {inventoryCount.result.counts[0].quantity}</p>
-      <a
-        href={`../checkout?id=${response.object.id}&quantity=1`}
-        class="btn"
-        id="buyLink">Buy Now</a
-      >
-      <label for="quantity">How Many?</label>
-      <input
-        type="number"
-        name="quantity"
-        id="quantity"
-        class="h-min w-10"
-        value="1"
-      />
-    </div>
+    Cart: {response.object.itemData.name} x {params.get("quantity")}
+
+    <a href={link}>Buy Now!</a>
   </main>
 
   <footer
@@ -87,14 +99,4 @@ const inventoryCount = await client.inventoryApi.retrieveInventoryCount(
       </p>
     </div>
   </footer>
-  <script defer>
-  const input = document.getElementById("quantity");
-  const link = document.getElementById("buyLink");
-
-  input.addEventListener("change", () => {
-    link.href = link.href.split("&")[0];
-    link.href =
-      link.href + `&quantity=${input.value === "" ? 0 : input.value}`;
-  });
-  </script>
 </Layout>

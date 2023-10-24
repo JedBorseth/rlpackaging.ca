@@ -1,21 +1,37 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
+// @ts-ignore - Im upset there isnt any types for this
 import { Client, Environment } from "square";
+import type { SearchCatalogTypes } from "../../squareTypes";
 
 const date = new Date();
 
+if (import.meta.env.SQUARE_ACCESS_TOKEN === undefined) {
+  console.log("No Square Access Token");
+  return new Response("No Square Access Token", { status: 500 });
+}
 const client = await new Client({
   accessToken: import.meta.env.SQUARE_ACCESS_TOKEN,
   environment: Environment.Production,
 });
-const response = await client.catalogApi.searchCatalogItems({});
-if (response.result.items) {
-  console.log(response.result.items[0]);
-} else {
-  return;
+const response: SearchCatalogTypes = await client.catalogApi.searchCatalogItems(
+  {}
+);
+if (!response.result.items || !response) {
+  console.log("No Items");
+  return new Response("Cound Not Find Any Products From Square", {
+    status: 500,
+  });
 }
 const items = response.result.items;
+
+const fetchInventory = async (item: any) => {
+  return await client.inventoryApi.retrieveInventoryCount(
+    item.itemData?.variations[0].id,
+    "LT6VCG48B673C"
+  );
+};
 ---
 
 <Layout title="R&L Packaging">
@@ -23,15 +39,34 @@ const items = response.result.items;
     <Navbar />
   </header>
   <main>
-    <div class="flex flex-wrap gap-10 p-20">
+    <div class="flex flex-wrap gap-10 p-20 min-h-screen">
       {
         items &&
-          items.map((item) => {
+          items.map(async (item) => {
+            const price: bigint =
+              item.itemData?.variations[0].itemVariationData?.priceMoney
+                ?.amount;
+            const inventory = await fetchInventory(item);
             return (
-              <div class="w-1/4 bg-blue-400 h-36 flex rounded shadow-2xl flex-wrap">
-                <h2 class="w-full text-center">{item.itemData?.name}</h2>
-                <p>{item.itemData?.description}</p>
-                <a class="btn" href="/shop/test">Buy</a>
+              <div class="w-1/4 bg-red-500 h-48 flex rounded shadow-2xl flex-wrap relative">
+                <h2 class="w-full text-center text-2xl">
+                  {item.itemData?.name}
+                </h2>
+                <p class="w-full">
+                  {item.itemData?.description
+                    ? item.itemData.description
+                    : "No Description For Product"}
+                </p>
+                <h3>Stock: {inventory.result.counts[0].quantity}</h3>
+                <a
+                  class="btn btn-primary absolute bottom-0 right-0"
+                  href={`/shop/${item.id}`}
+                >
+                  {(Number(price) / 100).toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "CAD",
+                  })}
+                </a>
               </div>
             );
           })
