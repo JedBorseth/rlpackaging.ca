@@ -35,18 +35,6 @@ if (response.object?.itemData?.imageIds === undefined)
 
 const params = Astro.url.searchParams;
 
-const clearLinks = async () => {
-  try {
-    const allLinks = await client.checkoutApi.listPaymentLinks();
-    if (!allLinks.result.paymentLinks) return console.log("No Links");
-    allLinks.result.paymentLinks.forEach(async (link: { id: string }) => {
-      await client.checkoutApi.deletePaymentLink(link.id);
-    });
-  } catch (error) {
-    console.log(error);
-  }
-};
-
 const generateLink = async (id: string) => {
   try {
     const response = await client.checkoutApi.createPaymentLink({
@@ -59,9 +47,13 @@ const generateLink = async (id: string) => {
           },
         ],
       },
+      checkoutOptions: {
+        redirectUrl: "https://rlpackaging.ca",
+        merchantSupportEmail: "orders@rlpackaging.ca",
+        askForShippingAddress: true,
+      },
     });
     return response.result.paymentLink.url;
-    console.log(response.result);
   } catch (error) {
     console.log(error);
   }

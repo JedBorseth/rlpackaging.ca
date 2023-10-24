@@ -3,7 +3,7 @@ import { z } from "zod";
 import { Resend } from "resend";
 
 export const post: APIRoute = async ({ request }) => {
-  const api_key = process.env.RESEND_KEY;
+  const api_key = import.meta.env.RESEND_KEY;
   const data = await request.formData();
   const name = data.get("name");
   const email = data.get("email");
@@ -42,7 +42,7 @@ export const post: APIRoute = async ({ request }) => {
   (async function () {
     try {
       const data = await resend.emails.send({
-        from: `${name} <onboarding@resend.dev>`,
+        from: `"${name}" <noreply@jedborseth.com>`,
         to: ["orders@rlpackaging.ca"],
         subject: `From: ${email}`,
         html: `<html lang="en">
@@ -106,8 +106,5 @@ export const post: APIRoute = async ({ request }) => {
   })();
 
   console.log(`Feedback from ${name} <${email}>: ${message}`);
-  return new Response(
-    data,
-    { status: 200 }
-  );
+  return new Response(data, { status: 200 });
 };

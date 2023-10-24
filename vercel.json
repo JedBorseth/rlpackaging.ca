@@ -1,7 +1,7 @@
 {
   "crons": [
     {
-      "path": "/api/generatePaymentLinks",
+      "path": "/api/resetLinkCron",
       "schedule": "0 * * * *"
     }
   ]
