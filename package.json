@@ -11,17 +11,18 @@
   },
   "dependencies": {
     "@astrojs/react": "^2.2.2",
-    "@astrojs/tailwind": "^4.0.0",
-    "@astrojs/vercel": "^3.8.1",
+    "@astrojs/tailwind": "^5.0.2",
+    "@astrojs/vercel": "^5.1.0",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
-    "astro": "^2.10.9",
+    "astro": "^3.3.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-use-draggable-scroll": "^0.4.7",
     "resend": "^1.0.0",
     "square": "^32.0.0",
     "tailwindcss": "^3.3.3",
+    "vercel@latest": "link:astrojs/vercel@latest",
     "zod": "^3.22.1"
   },
   "devDependencies": {
