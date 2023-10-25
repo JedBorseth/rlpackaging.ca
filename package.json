@@ -20,11 +20,9 @@
     "astro": "^3.3.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-use-draggable-scroll": "^0.4.7",
     "resend": "^1.0.0",
     "square": "^32.0.0",
     "tailwindcss": "^3.3.3",
-    "vercel@latest": "link:astrojs/vercel@latest",
     "zod": "^3.22.1"
   },
   "devDependencies": {

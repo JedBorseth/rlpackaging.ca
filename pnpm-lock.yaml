@@ -31,9 +31,6 @@ dependencies:
   react-dom:
     specifier: ^18.2.0
     version: 18.2.0(react@18.2.0)
-  react-use-draggable-scroll:
-    specifier: ^0.4.7
-    version: 0.4.7(react@18.2.0)
   resend:
     specifier: ^1.0.0
     version: 1.1.0
@@ -43,9 +40,6 @@ dependencies:
   tailwindcss:
     specifier: ^3.3.3
     version: 3.3.3
-  vercel@latest:
-    specifier: link:astrojs/vercel@latest
-    version: link:astrojs/vercel@latest
   zod:
     specifier: ^3.22.1
     version: 3.22.4
@@ -3801,15 +3795,6 @@ packages:
       loose-envify: 1.4.0
       react: 18.2.0
       scheduler: 0.23.0
-    dev: false
-
-  /react-use-draggable-scroll@0.4.7(react@18.2.0):
-    resolution: {integrity: sha512-6gCxGPO9WV5dIsBaDrgUKBaac8CY07PkygcArfajijYSNDwAq0girDRjaBuF1+lRqQryoLFQfpVaV2u/Yh6CrQ==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      react: '>=16'
-    dependencies:
-      react: 18.2.0
     dev: false
 
   /react@18.2.0:
