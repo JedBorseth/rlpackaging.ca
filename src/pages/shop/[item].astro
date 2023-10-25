@@ -3,7 +3,7 @@ import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
 import type { retrieveCatalogTypes } from "../../squareTypes";
 // @ts-ignore
-import { Client, Environment } from "square";
+import { Client, Environment, RetrieveCatalogObjectResponse } from "square";
 
 const date = new Date();
 
@@ -18,6 +18,7 @@ const client = await new Client({
 const getItem = async () => {
   try {
     if (Astro.params.item?.includes("svg")) return;
+    if (Astro.params.item === undefined) return;
     const response = await client.catalogApi.retrieveCatalogObject(
       Astro.params.item
     );
@@ -28,7 +29,7 @@ const getItem = async () => {
   }
 };
 
-const response: retrieveCatalogTypes = await getItem();
+const response: any = await getItem();
 if (!response) return Astro.redirect("/shop");
 if (response.object?.itemData?.imageIds === undefined)
   return Astro.redirect("/shop");
@@ -52,7 +53,12 @@ const inventoryCount = await client.inventoryApi.retrieveInventoryCount(
     </h1>
     <div class="flex flex-wrap">
       <img src={imageUrl} alt="Product Image" />
-      <p>Stock: {inventoryCount.result.counts[0].quantity}</p>
+      <p>
+        Stock: {
+          inventoryCount.result.counts &&
+            inventoryCount.result.counts[0]?.quantity
+        }
+      </p>
       <a
         href={`../checkout?id=${response.object.id}&quantity=1`}
         class="btn"

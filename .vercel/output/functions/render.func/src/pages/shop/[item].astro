@@ -1,17 +1,72 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
+import type { retrieveCatalogTypes } from "../../squareTypes";
+// @ts-ignore
 import { Client, Environment } from "square";
 
 const date = new Date();
 
+if (import.meta.env.SQUARE_ACCESS_TOKEN === undefined) {
+  console.log("No Square Access Token");
+  return new Response("No Square Access Token", { status: 500 });
+}
+const client = await new Client({
+  accessToken: import.meta.env.SQUARE_ACCESS_TOKEN,
+  environment: Environment.Production,
+});
+const getItem = async () => {
+  try {
+    if (Astro.params.item?.includes("svg")) return;
+    const response = await client.catalogApi.retrieveCatalogObject(
+      Astro.params.item
+    );
+    return response.result;
+  } catch (error: any) {
+    console.error(error);
+    return new Response(error, { status: 500 });
+  }
+};
+
+const response: retrieveCatalogTypes = await getItem();
+if (!response) return Astro.redirect("/shop");
+if (response.object?.itemData?.imageIds === undefined)
+  return Astro.redirect("/shop");
+const fetchImage = await client.catalogApi.retrieveCatalogObject(
+  response.object?.itemData?.imageIds[0]
+);
+const imageUrl = fetchImage.result.object?.imageData?.url;
+const inventoryCount = await client.inventoryApi.retrieveInventoryCount(
+  response.object.itemData?.variations[0].id,
+  "LT6VCG48B673C"
+);
 ---
 
 <Layout title="R&L Packaging">
   <header class="sticky top-0 z-50">
     <Navbar />
   </header>
-  <main>
+  <main class="min-h-screen">
+    <h1 class="text-3xl text-center">
+      {response.object?.itemData.name}
+    </h1>
+    <div class="flex flex-wrap">
+      <img src={imageUrl} alt="Product Image" />
+      <p>Stock: {inventoryCount.result.counts[0].quantity}</p>
+      <a
+        href={`../checkout?id=${response.object.id}&quantity=1`}
+        class="btn"
+        id="buyLink">Buy Now</a
+      >
+      <label for="quantity">How Many?</label>
+      <input
+        type="number"
+        name="quantity"
+        id="quantity"
+        class="h-min w-10"
+        value="1"
+      />
+    </div>
   </main>
 
   <footer
@@ -32,4 +87,14 @@ const date = new Date();
       </p>
     </div>
   </footer>
+  <script defer>
+  const input = document.getElementById("quantity");
+  const link = document.getElementById("buyLink");
+
+  input.addEventListener("change", () => {
+    link.href = link.href.split("&")[0];
+    link.href =
+      link.href + `&quantity=${input.value === "" ? 0 : input.value}`;
+  });
+  </script>
 </Layout>
