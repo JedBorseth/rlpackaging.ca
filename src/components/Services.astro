@@ -19,34 +19,28 @@ const { title, item1, item2, item3 } = Astro.props;
 ---
 
 <section class="min-h-screen grid justify-items-center" id="about">
-  <div class="sm:col-span-3 self-center">
+  <div class="sm:col-span-3 self-center py-10 md:py-0">
     <h2 class="text-4xl flex justify-center">{title}</h2>
   </div>
   <article class="card bg-primary text-primary-content mx-5 h-min">
     <div class="card-body">
       <h2 class="card-title">{item1.title}</h2>
       <p>{item1.description}</p>
-      <div class="card-actions justify-end">
-
-      </div>
+      <div class="card-actions justify-end"></div>
     </div>
   </article>
   <article class="card bg-primary text-primary-content mx-5 h-min">
     <div class="card-body">
       <h2 class="card-title">{item2.title}</h2>
       <p>{item2.description}</p>
-      <div class="card-actions justify-end">
-
-      </div>
+      <div class="card-actions justify-end"></div>
     </div>
   </article>
   <article class="card bg-primary text-primary-content mx-5 h-min">
     <div class="card-body">
       <h2 class="card-title">{item3.title}</h2>
       <p>{item3.description}</p>
-      <div class="card-actions justify-end">
-
-      </div>
+      <div class="card-actions justify-end"></div>
     </div>
   </article>
 </section>

@@ -1,9 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
-// @ts-ignore - Im upset there isnt any types for this
 import { Client, Environment } from "square";
-import type { SearchCatalogTypes } from "../../squareTypes";
 
 const date = new Date();
 
@@ -15,22 +13,30 @@ const client = await new Client({
   accessToken: import.meta.env.SQUARE_ACCESS_TOKEN,
   environment: Environment.Production,
 });
-const response: SearchCatalogTypes = await client.catalogApi.searchCatalogItems(
-  {}
-);
-if (!response.result.items || !response) {
-  console.log("No Items");
-  return new Response("Cound Not Find Any Products From Square", {
-    status: 500,
-  });
-}
-const items = response.result.items;
 
+const getCatalogItems = async () => {
+  try {
+    const response = await client.catalogApi.searchCatalogItems({
+      limit: 50,
+    });
+
+    return response.result.items;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const items = await getCatalogItems();
 const fetchInventory = async (item: any) => {
-  return await client.inventoryApi.retrieveInventoryCount(
-    item.itemData?.variations[0].id,
-    "LT6VCG48B673C"
-  );
+  try {
+    const response = await client.inventoryApi.retrieveInventoryCount(
+      item.itemData?.variations[0].id,
+      "LT6VCG48B673C"
+    );
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
 };
 ---
 
@@ -43,8 +49,9 @@ const fetchInventory = async (item: any) => {
       {
         items &&
           items.map(async (item) => {
-            const price: bigint =
-              item.itemData?.variations[0].itemVariationData?.priceMoney
+            const price =
+              item?.itemData?.variations &&
+              item?.itemData.variations[0].itemVariationData?.priceMoney
                 ?.amount;
             const inventory = await fetchInventory(item);
             return (
@@ -57,7 +64,12 @@ const fetchInventory = async (item: any) => {
                     ? item.itemData.description
                     : "No Description For Product"}
                 </p>
-                <h3>Stock: {inventory.result.counts[0].quantity}</h3>
+                <h3>
+                  Stock:
+                  {inventory &&
+                    inventory.result?.counts &&
+                    inventory.result.counts[0].quantity}
+                </h3>
                 <a
                   class="btn btn-primary absolute bottom-0 right-0"
                   href={`/shop/${item.id}`}

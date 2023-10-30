@@ -1,10 +1,8 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/Navbar.astro";
-import type { retrieveCatalogTypes } from "../squareTypes";
-// @ts-ignore - Im upset there isnt any types for this
+import type { retrieveCatalogTypes, SearchCatalogTypes } from "../squareTypes";
 import { Client, Environment } from "square";
-import type { SearchCatalogTypes } from "../squareTypes";
 
 const date = new Date();
 
@@ -16,10 +14,16 @@ const client = await new Client({
   accessToken: import.meta.env.SQUARE_ACCESS_TOKEN,
   environment: Environment.Production,
 });
+
+if (
+  Astro.url.searchParams.get("id") === null ||
+  Astro.url.searchParams.get("quanitity") === null
+)
+  return Astro.redirect("/shop");
 const getItem = async () => {
   try {
     const response = await client.catalogApi.retrieveCatalogObject(
-      Astro.url.searchParams.get("id")
+      Astro.url.searchParams.get("id") ?? ""
     );
     return response.result;
   } catch (error: any) {
@@ -27,8 +31,7 @@ const getItem = async () => {
     return new Response(error, { status: 500 });
   }
 };
-
-const response: retrieveCatalogTypes = await getItem();
+const response: any = await getItem();
 if (!response) return Astro.redirect("/shop");
 if (response.object?.itemData?.imageIds === undefined)
   return Astro.redirect("/shop");
@@ -42,7 +45,7 @@ const generateLink = async (id: string) => {
         locationId: "LT6VCG48B673C",
         lineItems: [
           {
-            quantity: Astro.url.searchParams.get("quantity"),
+            quantity: Astro.url.searchParams.get("quantity") ?? "1",
             catalogObjectId: id,
           },
         ],
@@ -53,12 +56,12 @@ const generateLink = async (id: string) => {
         askForShippingAddress: true,
       },
     });
-    return response.result.paymentLink.url;
+    return response.result.paymentLink?.url;
   } catch (error) {
     console.log(error);
   }
 };
-const link: string = await generateLink(
+const link: string | undefined = await generateLink(
   response.object.itemData.variations[0].id
 );
 ---
