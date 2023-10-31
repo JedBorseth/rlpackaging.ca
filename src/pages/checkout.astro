@@ -17,7 +17,7 @@ const client = await new Client({
 
 if (
   Astro.url.searchParams.get("id") === null ||
-  Astro.url.searchParams.get("quanitity") === null
+  Astro.url.searchParams.get("quantity") === null
 )
   return Astro.redirect("/shop");
 const getItem = async () => {
@@ -32,9 +32,7 @@ const getItem = async () => {
   }
 };
 const response: any = await getItem();
-if (!response) return Astro.redirect("/shop");
-if (response.object?.itemData?.imageIds === undefined)
-  return Astro.redirect("/shop");
+// if (!response) return Astro.redirect("/shop");
 
 const params = Astro.url.searchParams;
 

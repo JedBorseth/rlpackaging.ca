@@ -1,7 +1,8 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
-import type { retrieveCatalogTypes } from "../../squareTypes";
+import SingleShopItem from "../../components/SingleShopItem";
+import type { CatalogItem, CatalogObject, ApiResponse } from "square";
 // @ts-ignore
 import { Client, Environment, RetrieveCatalogObjectResponse } from "square";
 
@@ -15,32 +16,74 @@ const client = await new Client({
   accessToken: import.meta.env.SQUARE_ACCESS_TOKEN,
   environment: Environment.Production,
 });
-const getItem = async () => {
+const getItem = async (): Promise<
+  Response | ApiResponse<RetrieveCatalogObjectResponse>
+> => {
   try {
-    if (Astro.params.item?.includes("svg")) return;
-    if (Astro.params.item === undefined) return;
+    if (Astro.params.item?.includes("svg"))
+      return new Response("No Item", { status: 404 });
+    if (Astro.params.item === undefined)
+      return new Response("No Item", { status: 404 });
     const response = await client.catalogApi.retrieveCatalogObject(
       Astro.params.item
     );
-    return response.result;
+    return response;
   } catch (error: any) {
     console.error(error);
     return new Response(error, { status: 500 });
   }
 };
+const getImageUrl = async (imageId: string) => {
+  try {
+    const fetchImage = await client.catalogApi.retrieveCatalogObject(imageId);
+    return fetchImage.result.object?.imageData?.url;
+  } catch (err: any) {
+    console.log(err);
+    return new Response(err, { status: 500 });
+  }
+};
+const getInventoryCount = async (variationId: string) => {
+  try {
+    const inventoryCount = await client.inventoryApi.retrieveInventoryCount(
+      variationId,
+      "LT6VCG48B673C"
+    );
 
-const response: any = await getItem();
-if (!response) return Astro.redirect("/shop");
-if (response.object?.itemData?.imageIds === undefined)
-  return Astro.redirect("/shop");
-const fetchImage = await client.catalogApi.retrieveCatalogObject(
-  response.object?.itemData?.imageIds[0]
+    if (!inventoryCount.result.counts) return 0;
+    return inventoryCount.result.counts[0].quantity;
+  } catch (err: any) {
+    console.log(err);
+    return new Response(err, { status: 500 });
+  }
+};
+const getCategory = async (categoryId: string) => {
+  try {
+    const category = await client.catalogApi.retrieveCatalogObject(categoryId);
+    return category.result.object?.categoryData?.name;
+  } catch (err: any) {
+    console.log(err);
+    return new Response(err, { status: 500 });
+  }
+};
+
+if (Astro.params.item?.includes("svg")) return Astro.redirect("/shop");
+if (Astro.params.item === undefined) return Astro.redirect("/shop");
+const item: any = await getItem();
+if (!item.result) return Astro.redirect("/shop");
+const imageUrl = await getImageUrl(item.result.object.itemData.imageIds[0]);
+const inventoryCount = await getInventoryCount(
+  item.result.object.itemData.variations[0].id
 );
-const imageUrl = fetchImage.result.object?.imageData?.url;
-const inventoryCount = await client.inventoryApi.retrieveInventoryCount(
-  response.object.itemData?.variations[0].id,
-  "LT6VCG48B673C"
+const category = await getCategory(item.result.object.itemData.categoryId);
+if (item.result.object.customAttributeValues === undefined)
+  return new Response("No Custom Attributes Found", { status: 500 });
+const customAttributes: { name: string; stringValue: string }[] = Object.values(
+  item.result.object.customAttributeValues
 );
+if (!item.result.object.itemData.variations)
+  return new Response("Missing Item Variations eg. Price, Inventory Amount", {
+    status: 500,
+  });
 ---
 
 <Layout title="R&L Packaging">
@@ -48,7 +91,36 @@ const inventoryCount = await client.inventoryApi.retrieveInventoryCount(
     <Navbar />
   </header>
   <main class="min-h-screen">
-    <h1 class="text-3xl text-center">
+    {
+      imageUrl && typeof inventoryCount && category && item.object ? (
+        "Loading..."
+      ) : (
+        <SingleShopItem
+          client:load
+          name={item.result.object.itemData.name}
+          imageUrl={imageUrl}
+          inventoryCount={inventoryCount}
+          price={(
+            Number(
+              item.result.object.itemData.variations[0].itemVariationData
+                .priceMoney.amount
+            ) / 100
+          ).toLocaleString("en-US", {
+            style: "currency",
+            currency: "CAD",
+          })}
+          id={item.result.object.id}
+          description={item.result.object.itemData.description}
+          category={category}
+          attr1={{
+            name: customAttributes[0].name,
+            value: customAttributes[0].stringValue,
+          }}
+        />
+      )
+    }
+
+    <!-- <h1 class="text-3xl text-center">
       {response.object?.itemData.name}
     </h1>
     <div class="flex flex-wrap">
@@ -72,7 +144,7 @@ const inventoryCount = await client.inventoryApi.retrieveInventoryCount(
         class="h-min w-10"
         value="1"
       />
-    </div>
+    </div> -->
   </main>
 
   <footer

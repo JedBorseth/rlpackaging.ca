@@ -38,6 +38,26 @@ const fetchInventory = async (item: any) => {
     console.error(error);
   }
 };
+const fetchImageUrls = async (item: any) => {
+  try {
+    const response = await client.catalogApi.retrieveCatalogObject(
+      item.itemData?.imageIds[0]
+    );
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
+const fetchCategory = async (item: any) => {
+  try {
+    const response = await client.catalogApi.retrieveCatalogObject(
+      item.itemData?.categoryId
+    );
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
 ---
 
 <Layout title="R&L Packaging">
@@ -45,45 +65,64 @@ const fetchInventory = async (item: any) => {
     <Navbar />
   </header>
   <main>
-    <div class="flex flex-wrap gap-10 p-20 min-h-screen">
-      {
-        items &&
-          items.map(async (item) => {
-            const price =
-              item?.itemData?.variations &&
-              item?.itemData.variations[0].itemVariationData?.priceMoney
-                ?.amount;
-            const inventory = await fetchInventory(item);
-            return (
-              <div class="w-1/4 bg-red-500 h-48 flex rounded shadow-2xl flex-wrap relative">
-                <h2 class="w-full text-center text-2xl">
-                  {item.itemData?.name}
-                </h2>
-                <p class="w-full">
-                  {item.itemData?.description
-                    ? item.itemData.description
-                    : "No Description For Product"}
-                </p>
-                <h3>
-                  Stock:
-                  {inventory &&
-                    inventory.result?.counts &&
-                    inventory.result.counts[0].quantity}
-                </h3>
-                <a
-                  class="btn btn-primary absolute bottom-0 right-0"
-                  href={`/shop/${item.id}`}
-                >
-                  {(Number(price) / 100).toLocaleString("en-US", {
-                    style: "currency",
-                    currency: "CAD",
-                  })}
-                </a>
-              </div>
-            );
-          })
-      }
-    </div>
+    <section class="text-gray-600 body-font bg-neutral-300 min-h-screen">
+      <div class="container px-5 py-24 mx-auto">
+        <div class="flex flex-wrap -m-4">
+          {
+            items
+              ? items.map(async (item) => {
+                  const price =
+                    item?.itemData?.variations &&
+                    item?.itemData.variations[0].itemVariationData?.priceMoney
+                      ?.amount;
+                  const inventory = await fetchInventory(item);
+                  const imgUrl = await fetchImageUrls(item);
+                  const category = await fetchCategory(item);
+                  return (
+                    <div
+                      class="lg:w-1/4 md:w-1/2 p-4 w-full md:tooltip"
+                      data-tip={
+                        item.itemData?.description
+                          ? item.itemData.description
+                          : "No Description For Product"
+                      }
+                    >
+                      <a
+                        class="block relative h-48 rounded overflow-hidden"
+                        href={`./shop/${item.id}`}
+                      >
+                        <img
+                          alt="ecommerce"
+                          class="object-cover object-center w-full h-full block"
+                          src={imgUrl?.result?.object?.imageData?.url}
+                        />
+                      </a>
+                      <div class="mt-4">
+                        <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">
+                          {category?.result.object?.categoryData?.name}
+                        </h3>
+                        <h2 class="text-gray-900 title-font text-lg font-medium">
+                          {item.itemData?.name}
+                        </h2>
+                        <p class="mt-1">
+                          {(Number(price) / 100).toLocaleString("en-US", {
+                            style: "currency",
+                            currency: "CAD",
+                          })}
+                          - Stock:
+                          {inventory &&
+                            inventory.result?.counts &&
+                            inventory.result.counts[0].quantity}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })
+              : "Loading"
+          }
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer
