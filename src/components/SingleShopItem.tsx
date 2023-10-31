@@ -95,12 +95,13 @@ const SingleShopItem = ({
                   type="number"
                   max={inventoryCount}
                   min={0}
-                  className="w-10 dark:text-white"
+                  defaultValue={1}
+                  className="w-10 dark:text-white px-2 rounded"
                 />
               </div>
               <a
                 className="flex ml-auto text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded"
-                href={`../checkout?id=${id}&quantity=${quantity}`}
+                href={`../api/checkout?id=${id}&quantity=${quantity}`}
               >
                 Buy Now
               </a>
