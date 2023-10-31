@@ -23,6 +23,19 @@ export const GET: APIRoute = async ({ request, redirect, params }) => {
   };
 
   const urlsArr = await getAllUrls();
-  console.log(request);
-  return new Response(JSON.stringify(request), { status: 500 });
+  const queryParams = new URL(request.url).searchParams;
+  const deleteUrl = async (url) => {
+    try {
+      const response = await client.checkoutApi.deletePaymentLink(url);
+      return response.result;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  urlsArr?.forEach(async (url) => {
+    // if (url.orderId === queryParams.get("orderId")) {
+    const deleted = await deleteUrl(url.id);
+  });
+  return redirect("/shop?success=true");
+  return new Response("Hello", { status: 500 });
 };
