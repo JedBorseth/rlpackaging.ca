@@ -166,13 +166,17 @@ if (!item.result.object.itemData.variations)
     </div>
   </footer>
   <script defer>
-  const input = document.getElementById("quantity");
-  const link = document.getElementById("buyLink");
-
-  input.addEventListener("change", () => {
-    link.href = link.href.split("&")[0];
-    link.href =
-      link.href + `&quantity=${input.value === "" ? 0 : input.value}`;
-  });
+    const input = document.getElementById("quantity");
+    const link = document.getElementById("buyLink");
+    if (link && input)
+      input.addEventListener("change", () => {
+        link.href = link.href.split("&")[0];
+        link.href =
+          link.href + `&quantity=${input.value === "" ? 0 : input.value}`;
+      });
   </script>
+  <script
+    type="text/javascript"
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCBINBUPEQ-HAJN0JyrUl6lzk7BA2sPMyM&libraries=places"
+  ></script>
 </Layout>

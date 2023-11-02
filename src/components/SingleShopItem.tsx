@@ -1,5 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import GooglePlacesAutocomplete from "react-google-places-autocomplete";
+import { geocodeByAddress, getLatLng } from "react-google-places-autocomplete";
 
+// This is possibly the yuckiest code I've ever written, but it works
 type SingleShopItemProps = {
   name: string;
   imageUrl: any;
@@ -23,7 +26,79 @@ const SingleShopItem = ({
 }: SingleShopItemProps) => {
   const [tab, setTab] = useState<tabOptions>("description");
   const [quantity, setQuantity] = useState(1);
-  useEffect(() => {}, [tab]);
+  const [shipping, setShipping] = useState(false);
+  const [googleAddress, setGoogleAddress] = useState<any>(null);
+  const [shippable, setShippable] = useState(false);
+
+  function haversineDistance(
+    lat1: number,
+    lon1: number,
+    lat2: number,
+    lon2: number
+  ): number {
+    const earthRadius = 6371; // Radius of the Earth in kilometers
+
+    const toRadians = (degrees: number) => {
+      return degrees * (Math.PI / 180);
+    };
+
+    const dLat = toRadians(lat2 - lat1);
+    const dLon = toRadians(lon2 - lon1);
+
+    lat1 = toRadians(lat1);
+    lat2 = toRadians(lat2);
+
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = earthRadius * c;
+
+    return distance;
+  }
+
+  useEffect(() => {
+    if (quantity >= inventoryCount) {
+      setQuantity(inventoryCount);
+    }
+  }, [quantity]);
+
+  const RLCOORDS = {
+    lat: 49.04453454773623,
+    lng: -122.36579867346927,
+  };
+  useEffect(() => {
+    if (googleAddress === null) return;
+    geocodeByAddress(googleAddress.label)
+      .then((results) => {
+        results[0].address_components.forEach((component: any) => {
+          if (component.types.includes("country")) {
+            if (component.short_name === "CA") {
+              setShippable(true);
+            } else {
+              setShippable(false);
+              return;
+            }
+          }
+        });
+        return getLatLng(results[0]);
+      })
+      .then(({ lat, lng }) => {
+        const distance: number = haversineDistance(
+          RLCOORDS.lat,
+          RLCOORDS.lng,
+          lat,
+          lng
+        );
+        if (distance < 50) {
+          setShippable(true);
+        }
+      });
+  }, [googleAddress]);
+
+  const modal = useRef<any>(null);
+
   return (
     <section className="text-gray-600 body-font overflow-hidden bg-neutral-300">
       <div className="container px-5 py-24 mx-auto">
@@ -92,19 +167,72 @@ const SingleShopItem = ({
                   onChange={(e) => {
                     setQuantity(parseInt(e.target.value));
                   }}
+                  value={quantity}
                   type="number"
                   max={inventoryCount}
                   min={0}
-                  defaultValue={1}
-                  className="w-10 dark:text-white px-2 rounded"
+                  className="dark:text-white px-2 rounded"
                 />
               </div>
-              <a
-                className="flex ml-auto text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded"
-                href={`../api/checkout?id=${id}&quantity=${quantity}`}
+              <button
+                className="btn btn-primary ml-auto bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded"
+                onClick={() => {
+                  modal.current?.showModal();
+                }}
               >
-                Buy Now
-              </a>
+                Buy
+              </button>
+              <dialog id="my_modal_2" className="modal" ref={modal}>
+                <div className="modal-box text-white h-auto pb-48">
+                  <div className="form-control">
+                    <label className="label cursor-pointer">
+                      <span className="label-text">Shipping</span>
+                      <input
+                        type="checkbox"
+                        className="toggle"
+                        onChange={() => {
+                          setShipping(!shipping);
+                        }}
+                      />
+                    </label>
+                    {shipping && (
+                      <GooglePlacesAutocomplete
+                        selectProps={{
+                          styles: {
+                            input: (provided) => ({
+                              ...provided,
+                              color: "black",
+                            }),
+                            option: (provided) => ({
+                              ...provided,
+                              color: "black",
+                            }),
+                            singleValue: (provided) => ({
+                              ...provided,
+                              color: "black",
+                            }),
+                          },
+                          onChange: (e) => {
+                            if (e !== null) setGoogleAddress(e);
+                          },
+                        }}
+                      />
+                    )}
+                    <a
+                      className={`text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded absolute bottom-4 right-4 ${
+                        shipping && !shippable && "btn-disabled"
+                      }  
+                      `}
+                      href={`../api/checkout?id=${id}&quantity=${quantity}&shipping=${shipping}`}
+                    >
+                      Buy Now
+                    </a>
+                  </div>
+                </div>
+                <form method="dialog" className="modal-backdrop">
+                  <button>close</button>
+                </form>
+              </dialog>
             </div>
           </div>
           <img

@@ -47,6 +47,12 @@ export const GET: APIRoute = async ({ request, redirect }) => {
           redirectUrl: "https://rlpackaging.ca/api/cleanupCheckoutUrls",
           merchantSupportEmail: "orders@rlpackaging.ca",
           askForShippingAddress: true,
+          shippingFee: {
+            charge: {
+              amount: BigInt(5000),
+              currency: "CAD",
+            },
+          },
         },
       });
       return response.result.paymentLink;

@@ -24,7 +24,7 @@ export const GET: APIRoute = async ({ request, redirect, params }) => {
 
   const urlsArr = await getAllUrls();
   const queryParams = new URL(request.url).searchParams;
-  const deleteUrl = async (url) => {
+  const deleteUrl = async (url: any) => {
     try {
       const response = await client.checkoutApi.deletePaymentLink(url);
       return response.result;
