@@ -49,7 +49,7 @@ const getInventoryCount = async (variationId: string) => {
       "LT6VCG48B673C"
     );
 
-    if (!inventoryCount.result.counts) return 0;
+    if (!inventoryCount.result.counts) return "0";
     return inventoryCount.result.counts[0].quantity;
   } catch (err: any) {
     console.log(err);
@@ -98,8 +98,8 @@ if (!item.result.object.itemData.variations)
         <SingleShopItem
           client:load
           name={item.result.object.itemData.name}
-          imageUrl={imageUrl}
-          inventoryCount={inventoryCount}
+          imageUrl={imageUrl ?? ""}
+          inventoryCount={inventoryCount ?? "0"}
           price={(
             Number(
               item.result.object.itemData.variations[0].itemVariationData
@@ -111,7 +111,7 @@ if (!item.result.object.itemData.variations)
           })}
           id={item.result.object.id}
           description={item.result.object.itemData.description}
-          category={category}
+          category={category ?? ""}
           attr1={{
             name: customAttributes[0].name,
             value: customAttributes[0].stringValue,
@@ -155,6 +155,7 @@ if (!item.result.object.itemData.variations)
       <a class="link link-hover about-scroll">About</a>
       <a class="link link-hover history-scroll">History</a>
       <a class="link link-hover contact-scroll">Contact</a>
+      <a class="link link-hover" href="./shop">Shop</a>
     </div>
     <div>
       <p>

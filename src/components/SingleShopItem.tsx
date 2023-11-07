@@ -2,19 +2,19 @@ import dist from "@astrojs/react";
 import { useEffect, useRef, useState } from "react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { geocodeByAddress, getLatLng } from "react-google-places-autocomplete";
-
+import { cart } from "../store";
 // This is possibly the yuckiest code I've ever written, but it works
 type SingleShopItemProps = {
   name: string;
-  imageUrl: string;
-  inventoryCount: string;
+  imageUrl: string | Response;
+  inventoryCount: string | Response;
   description: string;
   price: string;
   id: string;
-  category: string;
+  category: string | Response;
   attr1: { name: string; value: string };
 };
-type tabOptions = "description" | "reviews" | "details";
+type tabOptions = "description" | "rating" | "details";
 const SingleShopItem = ({
   name,
   imageUrl,
@@ -31,6 +31,7 @@ const SingleShopItem = ({
   const [googleAddress, setGoogleAddress] = useState<any>(null);
   const [shippable, setShippable] = useState(false);
 
+  // Shipping Location Stuff
   const haversineDistance = (
     lat1: number,
     lon1: number,
@@ -58,11 +59,6 @@ const SingleShopItem = ({
 
     return distance;
   };
-
-  useEffect(() => {
-    if (quantity >= Number(inventoryCount)) setQuantity(Number(inventoryCount));
-  }, [quantity]);
-
   const RLCOORDS = {
     lat: 49.04453454773623,
     lng: -122.36579867346927,
@@ -96,13 +92,47 @@ const SingleShopItem = ({
 
   const modal = useRef<any>(null);
 
+  // Make sure quantity cannot go over inventory count
+  useEffect(() => {
+    if (quantity >= Number(inventoryCount)) setQuantity(Number(inventoryCount));
+  }, [quantity]);
+
+  // Cart Stuff
+  const addItemToCart = ({
+    name,
+    id,
+    quantity,
+  }: {
+    name: string;
+    id: string;
+    quantity: number;
+  }) => {
+    const cartItems = cart.get();
+    let exists = false;
+    const newCartItems = cartItems.map((item) => {
+      if (item.id === id) {
+        exists = true;
+        return { ...item, quantity: item.quantity + quantity };
+      }
+      return item;
+    });
+    if (!exists) {
+      cart.set([...cartItems, { name, id, quantity }]);
+    } else {
+      cart.set(newCartItems);
+    }
+  };
+  const clearCart = () => {
+    cart.set([]);
+  };
+
   return (
     <section className="text-gray-600 body-font overflow-hidden bg-neutral-300">
       <div className="container px-5 py-24 mx-auto">
         <div className="lg:w-4/5 mx-auto flex flex-wrap">
           <div className="lg:w-1/2 w-full lg:pr-10 lg:py-6 mb-6 lg:mb-0">
             <h2 className="text-sm title-font text-gray-500 tracking-widest">
-              {category}
+              {category.toString()}
             </h2>
             <h1 className="text-gray-900 text-3xl title-font font-medium mb-4">
               {name}
@@ -119,14 +149,14 @@ const SingleShopItem = ({
                 Description
               </a>
               <a
-                className={`flex-grow border-b-2 border-gray-300 py-2 text-lg px-1 cursor-pointer ${
-                  tab === "reviews" && "border-red-500 text-red-500"
-                }`}
                 onClick={() => {
-                  setTab("reviews");
+                  setTab("rating");
                 }}
+                className={`flex-grow border-b-2 py-2 text-lg px-1 border-gray-300 cursor-pointer ${
+                  tab === "rating" && "border-red-500 text-red-500"
+                }`}
               >
-                Reviews
+                Ratings
               </a>
               <a
                 className={`flex-grow border-b-2 border-gray-300 py-2 text-lg px-1 cursor-pointer ${
@@ -139,23 +169,33 @@ const SingleShopItem = ({
                 Details
               </a>
             </div>
-            {tab === "description" && (
-              <p className="leading-relaxed mb-4">{description}</p>
-            )}
+            <div className="p-2 min-h-16">
+              {tab === "description" && (
+                <p className="leading-relaxed mb-4">{description}</p>
+              )}
+              {tab === "details" && (
+                <>
+                  <div className="flex border-t border-gray-200 py-2">
+                    <span className="text-gray-500">Stock</span>
+                    <span className="ml-auto text-gray-900">
+                      {inventoryCount.toString()}
+                    </span>
+                  </div>
+                  <div className="flex border-t border-gray-200 py-2">
+                    <span className="text-gray-500">{attr1.name}</span>
+                    <span className="ml-auto text-gray-900">{attr1.value}</span>
+                  </div>
+                  <div className="flex border-t border-b mb-6 border-gray-200 py-2">
+                    <span className="text-gray-500">Quantity</span>
+                    <span className="ml-auto text-gray-900">
+                      {inventoryCount.toString()}
+                    </span>
+                  </div>
+                </>
+              )}
+            </div>
 
-            <div className="flex border-t border-gray-200 py-2">
-              <span className="text-gray-500">Stock</span>
-              <span className="ml-auto text-gray-900">{inventoryCount}</span>
-            </div>
-            <div className="flex border-t border-gray-200 py-2">
-              <span className="text-gray-500">{attr1.name}</span>
-              <span className="ml-auto text-gray-900">{attr1.value}</span>
-            </div>
-            <div className="flex border-t border-b mb-6 border-gray-200 py-2">
-              <span className="text-gray-500">Quantity</span>
-              <span className="ml-auto text-gray-900">{inventoryCount}</span>
-            </div>
-            <div className="flex">
+            <div className="flex justify-evenly flex-wrap gap-4">
               <div className="flex gap-2">
                 <span className="title-font font-medium text-2xl text-gray-900">
                   {price}
@@ -167,19 +207,37 @@ const SingleShopItem = ({
                   name="quantity"
                   value={quantity}
                   type="number"
-                  max={inventoryCount}
+                  max={inventoryCount.toString()}
                   min={0}
-                  className="dark:text-white px-2 rounded"
+                  className="dark:text-white px-2 rounded h-10"
                 />
               </div>
-              <button
-                className="btn btn-primary ml-auto bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded"
-                onClick={() => {
-                  modal.current?.showModal();
-                }}
-              >
-                Buy
-              </button>
+              <div className="flex flex-col gap-2 justify-center">
+                <button
+                  className="btn btn-primary ml-auto bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded"
+                  onClick={() => {
+                    addItemToCart({ name, id, quantity });
+                  }}
+                >
+                  Add to cart
+                </button>
+                <button
+                  className="btn"
+                  onClick={() => {
+                    clearCart();
+                  }}
+                >
+                  clear 'for testing'
+                </button>
+                <button
+                  className="btn btn-primary bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded"
+                  onClick={() => {
+                    modal.current?.showModal();
+                  }}
+                >
+                  Buy now
+                </button>
+              </div>
               <dialog id="my_modal_2" className="modal" ref={modal}>
                 <div className="modal-box text-white h-auto pb-48">
                   <div className="form-control">
@@ -237,7 +295,7 @@ const SingleShopItem = ({
           <img
             alt="ecommerce"
             className="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded"
-            src={imageUrl}
+            src={imageUrl.toString()}
           />
         </div>
       </div>

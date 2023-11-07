@@ -1,0 +1,35 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import CartComponent from "../components/Cart.tsx";
+const date = new Date();
+---
+
+<Layout title="R&L Packaging">
+  <header class="sticky top-0 z-50">
+    <Navbar />
+  </header>
+  <main class="min-h-screen">
+    <CartComponent client:load />
+  </main>
+
+  <footer
+    class="footer footer-center p-10 bg-base-200 text-base-content rounded"
+  >
+    <div class="grid grid-flow-col gap-4">
+      <a class="link link-hover home-scroll" href="/">Home</a>
+      <a class="link link-hover about-scroll" href="/">About</a>
+      <a class="link link-hover history-scroll" href="/">History</a>
+      <a class="link link-hover contact-scroll" href="/">Contact</a>
+      <a class="link link-hover" href="./shop">Shop</a>
+    </div>
+    <div>
+      <p>
+        Copyright © {date.getFullYear()} - All right reserved by R&L Packaging
+      </p>
+      <p class="text-xs">
+        Website designed by <a href="https://jedborseth.com">Jed Borseth</a>
+      </p>
+    </div>
+  </footer>
+</Layout>
