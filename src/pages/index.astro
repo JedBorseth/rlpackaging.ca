@@ -11,17 +11,17 @@ const date = new Date();
 const service1 = {
   title: "Assembling and Manual Labour Services",
   description:
-  "Wine partitions, box separators and intricate die cut items can be difficult to handle when it comes to small volume. Our team of assemblers and general labours can handle orders of any size. From 1 box to a 1 truck load.",
+    "Wine partitions, box separators and intricate die cut items can be difficult to handle when it comes to small volume. Our team of assemblers and general labours can handle orders of any size. From 1 box to a 1 truck load.",
 };
 const service2 = {
   title: "Custom Die Cutting",
   description:
-  "From regular flat bed to mini rotary and large rotary die cutting. We have the capability of handling almost all types of material and sizes.",
+    "From regular flat bed to mini rotary and large rotary die cutting. We have the capability of handling almost all types of material and sizes.",
 };
 const service3 = {
   title: "Small to medium Volume boxes",
   description:
-  "Is your Stock box not quite right? All sorts of shapes and sizes with no minimum requirement and 4 Color printing capability.",
+    "Is your Stock box not quite right? All sorts of shapes and sizes with no minimum requirement and 4 Color printing capability.",
 };
 ---
 
@@ -35,29 +35,33 @@ const service3 = {
       title="R&L Packaging"
       subtitle="Solution Focused on difficult projects for your packaging needs. We do our best to help in areas where no one else can. With no minimums and a support mentality, we are the partner to the small business, distributor, and packaging manufacturer."
     />
-  
+
     <Services
       title="Our Unique Abilities"
       item1={service1}
       item2={service2}
       item3={service3}
     />
-    <History
-      title="Our Values"
-      client:visible
-    />
+    <History title="Our Values" client:visible />
     <Contact />
   </main>
-  <footer class="footer footer-center p-10 bg-base-200 text-base-content rounded">
+  <footer
+    class="footer footer-center p-10 bg-base-200 text-base-content rounded"
+  >
     <div class="grid grid-flow-col gap-4">
-      <a class="link link-hover home-scroll">Home</a> 
-      <a class="link link-hover about-scroll">About</a> 
-      <a class="link link-hover history-scroll">History</a> 
+      <a class="link link-hover home-scroll">Home</a>
+      <a class="link link-hover about-scroll">About</a>
+      <a class="link link-hover history-scroll">History</a>
       <a class="link link-hover contact-scroll">Contact</a>
-    </div> 
+      <a class="link link-hover" href="/shop">Shop</a>
+    </div>
     <div>
-      <p>Copyright © {date.getFullYear()} - All right reserved by R&L Packaging</p>
-      <p class="text-xs">Website designed by <a href="https://jedborseth.com">Jed Borseth</a></p>
+      <p>
+        Copyright © {date.getFullYear()} - All right reserved by R&L Packaging
+      </p>
+      <p class="text-xs">
+        Website designed by <a href="https://jedborseth.com">Jed Borseth</a>
+      </p>
     </div>
   </footer>
 </Layout>

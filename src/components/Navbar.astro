@@ -1,5 +1,5 @@
 ---
-
+const atHome = Astro.url.pathname === "/";
 ---
 
 <div class="drawer drawer-end text-2xl">
@@ -29,10 +29,14 @@
 
       <div class="flex-none hidden md:block">
         <ul class="menu menu-horizontal">
-          <li><a class="home-scroll">Home</a></li>
-          <li><a class="about-scroll">About</a></li>
-          <li><a class="history-scroll">History</a></li>
-          <li><a class="contact-scroll">Contact</a></li>
+          <li><a class="home-scroll" href={atHome ? null : "/"}>Home</a></li>
+          <li><a class="about-scroll" href={atHome ? null : "/"}>About</a></li>
+          <li>
+            <a class="history-scroll" href={atHome ? null : "/"}>History</a>
+          </li>
+          <li>
+            <a class="contact-scroll" href={atHome ? null : "/"}>Contact</a>
+          </li>
         </ul>
       </div>
     </div>
@@ -43,10 +47,10 @@
       class="menu p-4 w-72 h-full bg-base-100 gap-5 text-lg pt-20"
       id="mobile-items"
     >
-      <li><a class="home-scroll">Home</a></li>
-      <li><a class="about-scroll">About</a></li>
-      <li><a class="history-scroll">History</a></li>
-      <li><a class="contact-scroll">Contact</a></li>
+      <li><a class="home-scroll" href={atHome ? null : "/"}>Home</a></li>
+      <li><a class="about-scroll" href={atHome ? null : "/"}>About</a></li>
+      <li><a class="history-scroll" href={atHome ? null : "/"}>History</a></li>
+      <li><a class="contact-scroll" href={atHome ? null : "/"}>Contact</a></li>
       <li class="opacity-0 flex-1"></li>
       <li
         class="menu-title flex flex-row gap-10 border-t-2 pt-3 justify-between"

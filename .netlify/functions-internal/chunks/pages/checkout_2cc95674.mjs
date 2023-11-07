@@ -1,48 +1,39 @@
-import type { CatalogObject, RetrieveCatalogObjectResponse } from "square";
-import { Client, Environment } from "square";
-import type { APIRoute } from "astro";
-import type { APIContext } from "astro";
+import { Client, Environment } from 'square';
 
-export const GET: APIRoute = async ({ request, redirect }) => {
-  if (import.meta.env.SQUARE_ACCESS_TOKEN === undefined) {
-    console.log("No Square Access Token");
-    return new Response("No Square Access Token", { status: 500 });
-  }
+const GET = async ({ request, redirect }) => {
   const client = await new Client({
-    accessToken: import.meta.env.SQUARE_ACCESS_TOKEN,
-    environment: Environment.Production,
+    accessToken: "EAAAF2y_qo6mTkW0SVC2jq-_ItQOrfSPMlLoR8u2m5ijEK0XagGuUqSKAuaEVCrj",
+    environment: Environment.Production
   });
   const queryParams = new URL(request.url).searchParams;
   const id = queryParams.get("id");
   const quantity = queryParams.get("quantity");
   if (!id || !quantity)
     return new Response("Missing required fields", { status: 400 });
-
   const createUrl = async () => {
     try {
       const response = await client.catalogApi.retrieveCatalogObject(id);
       return response.result;
-    } catch (error: any) {
+    } catch (error) {
       console.log(error);
       redirect("/shop");
     }
   };
-
   const item = await createUrl();
-  if (item?.object?.id !== id) return redirect("/shop");
-
+  if (item?.object?.id !== id)
+    return redirect("/shop");
   const generatePaymentUrl = async () => {
     const shippingOptions = () => {
       if (queryParams.get("shipping") === "true")
         return {
           name: "Shipping Fee",
           charge: {
-            amount: BigInt(5000),
-            currency: "CAD",
-          },
+            amount: BigInt(5e3),
+            currency: "CAD"
+          }
         };
       else {
-        return undefined;
+        return void 0;
       }
     };
     try {
@@ -51,17 +42,17 @@ export const GET: APIRoute = async ({ request, redirect }) => {
           locationId: "LT6VCG48B673C",
           lineItems: [
             {
-              quantity: quantity,
-              catalogObjectId: item?.object?.itemData?.variations?.[0]?.id,
-            },
-          ],
+              quantity,
+              catalogObjectId: item?.object?.itemData?.variations?.[0]?.id
+            }
+          ]
         },
         checkoutOptions: {
           redirectUrl: "https://rlpackaging.ca/api/cleanupCheckoutUrls",
           merchantSupportEmail: "orders@rlpackaging.ca",
           askForShippingAddress: true,
-          shippingFee: shippingOptions(),
-        },
+          shippingFee: shippingOptions()
+        }
       });
       return response.result.paymentLink;
     } catch (err) {
@@ -69,6 +60,9 @@ export const GET: APIRoute = async ({ request, redirect }) => {
     }
   };
   const link = await generatePaymentUrl();
-  if (!link) return redirect("/shop");
+  if (!link)
+    return redirect("/shop");
   return redirect(link.longUrl ?? "/shop");
 };
+
+export { GET };

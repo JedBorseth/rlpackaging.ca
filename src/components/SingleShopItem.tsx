@@ -1,3 +1,4 @@
+import dist from "@astrojs/react";
 import { useEffect, useRef, useState } from "react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { geocodeByAddress, getLatLng } from "react-google-places-autocomplete";
@@ -5,12 +6,12 @@ import { geocodeByAddress, getLatLng } from "react-google-places-autocomplete";
 // This is possibly the yuckiest code I've ever written, but it works
 type SingleShopItemProps = {
   name: string;
-  imageUrl: any;
-  inventoryCount: any;
+  imageUrl: string;
+  inventoryCount: string;
   description: string;
   price: string;
   id: string;
-  category: any;
+  category: string;
   attr1: { name: string; value: string };
 };
 type tabOptions = "description" | "reviews" | "details";
@@ -30,12 +31,12 @@ const SingleShopItem = ({
   const [googleAddress, setGoogleAddress] = useState<any>(null);
   const [shippable, setShippable] = useState(false);
 
-  function haversineDistance(
+  const haversineDistance = (
     lat1: number,
     lon1: number,
     lat2: number,
     lon2: number
-  ): number {
+  ): number => {
     const earthRadius = 6371; // Radius of the Earth in kilometers
 
     const toRadians = (degrees: number) => {
@@ -56,12 +57,10 @@ const SingleShopItem = ({
     const distance = earthRadius * c;
 
     return distance;
-  }
+  };
 
   useEffect(() => {
-    if (quantity >= inventoryCount) {
-      setQuantity(inventoryCount);
-    }
+    if (quantity >= Number(inventoryCount)) setQuantity(Number(inventoryCount));
   }, [quantity]);
 
   const RLCOORDS = {
@@ -71,27 +70,25 @@ const SingleShopItem = ({
   useEffect(() => {
     if (googleAddress === null) return;
     geocodeByAddress(googleAddress.label)
-      .then((results) => {
-        results[0].address_components.forEach((component: any) => {
+      .then(async (results) => {
+        let canada = false;
+        results[0].address_components.forEach((component) => {
           if (component.types.includes("country")) {
-            if (component.short_name === "CA") {
-              setShippable(true);
-            } else {
-              setShippable(false);
-              return;
-            }
+            canada = component.short_name === "CA";
           }
         });
-        return getLatLng(results[0]);
+        const latLng = await getLatLng(results[0]);
+        return { ...latLng, inCanada: canada };
       })
-      .then(({ lat, lng }) => {
+      .then(({ lat, lng, inCanada }) => {
         const distance: number = haversineDistance(
           RLCOORDS.lat,
           RLCOORDS.lng,
           lat,
           lng
         );
-        if (distance < 50) {
+        console.log(distance);
+        if (distance < 50 && inCanada) {
           setShippable(true);
         }
       });
@@ -167,6 +164,7 @@ const SingleShopItem = ({
                   onChange={(e) => {
                     setQuantity(parseInt(e.target.value));
                   }}
+                  name="quantity"
                   value={quantity}
                   type="number"
                   max={inventoryCount}
@@ -188,6 +186,7 @@ const SingleShopItem = ({
                     <label className="label cursor-pointer">
                       <span className="label-text">Shipping</span>
                       <input
+                        name="shippingModal"
                         type="checkbox"
                         className="toggle"
                         onChange={() => {
