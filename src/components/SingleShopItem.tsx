@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { geocodeByAddress, getLatLng } from "react-google-places-autocomplete";
 import { cart } from "../store";
+import type { CartTypes } from "../store";
+import { haversineDistance } from "../utils";
 import toast, { Toaster } from "react-hot-toast";
 
 // This is possibly the yuckiest code I've ever written, but it works
@@ -34,33 +36,6 @@ const SingleShopItem = ({
   const [shippable, setShippable] = useState(false);
 
   // Shipping Location Stuff
-  const haversineDistance = (
-    lat1: number,
-    lon1: number,
-    lat2: number,
-    lon2: number
-  ): number => {
-    const earthRadius = 6371; // Radius of the Earth in kilometers
-
-    const toRadians = (degrees: number) => {
-      return degrees * (Math.PI / 180);
-    };
-
-    const dLat = toRadians(lat2 - lat1);
-    const dLon = toRadians(lon2 - lon1);
-
-    lat1 = toRadians(lat1);
-    lat2 = toRadians(lat2);
-
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = earthRadius * c;
-
-    return distance;
-  };
   const RLCOORDS = {
     lat: 49.04453454773623,
     lng: -122.36579867346927,
@@ -102,24 +77,7 @@ const SingleShopItem = ({
   }, [quantity]);
 
   // Cart Stuff
-  const addItemToCart = ({
-    name,
-    id,
-    quantity,
-    details,
-  }: {
-    name: string;
-    id: string;
-    quantity: number;
-    details: {
-      attr1: { name: string; value: string };
-      price: string;
-      imageUrl: string | Response;
-      category: string | Response;
-      inventoryCount: string | Response;
-      description: string;
-    };
-  }) => {
+  const addItemToCart = ({ name, id, quantity, details }: CartTypes) => {
     const cartItems = cart.get();
     let exists = false;
     const newCartItems = cartItems.map((item) => {

@@ -1,7 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { cart } from "../store";
 import type { CartTypes } from "../store";
 import toast, { Toaster } from "react-hot-toast";
+import GooglePlacesAutocomplete, {
+  geocodeByAddress,
+  getLatLng,
+} from "react-google-places-autocomplete";
+import { haversineDistance } from "../utils";
 
 const CartComponent = () => {
   const [cartItems, setCartItems] = useState<CartTypes | null>(null);
@@ -66,8 +71,48 @@ const CartComponent = () => {
     if (cartItems === null) return "../404";
     const id = cartItems.map((item) => item.id).join(",");
     const quantity = cartItems.map((item) => item.quantity).join(",");
-    return `../api/cartCheckout?ids=${id}&amounts=${quantity}&shipping=false`;
+    return `../api/cartCheckout?ids=${id}&amounts=${quantity}&shipping=${shipping}`;
   };
+
+  // Shipping Stuff
+  const [shipping, setShipping] = useState(false);
+  const [googleAddress, setGoogleAddress] = useState<any>(null);
+  const [shippable, setShippable] = useState(false);
+
+  const RLCOORDS = {
+    lat: 49.04453454773623,
+    lng: -122.36579867346927,
+  };
+  useEffect(() => {
+    if (googleAddress === null) return;
+    geocodeByAddress(googleAddress.label)
+      .then(async (results) => {
+        let canada = false;
+        results[0].address_components.forEach((component) => {
+          if (component.types.includes("country")) {
+            canada = component.short_name === "CA";
+          }
+        });
+        const latLng = await getLatLng(results[0]);
+        return { ...latLng, inCanada: canada };
+      })
+      .then(({ lat, lng, inCanada }) => {
+        const distance: number = haversineDistance(
+          RLCOORDS.lat,
+          RLCOORDS.lng,
+          lat,
+          lng
+        );
+        console.log(distance);
+        if (distance < 50 && inCanada) {
+          setShippable(true);
+        } else {
+          setShippable(false);
+        }
+      });
+  }, [googleAddress]);
+
+  const modal = useRef<any>(null);
 
   return (
     <>
@@ -183,9 +228,11 @@ const CartComponent = () => {
                     Clear All
                   </button>
                 </div>
-                <a
+                <button
                   className="btn btn-primary ml-auto bg-red-500 border-0 py-2 lg:px-6 xs:px-2 px-0 focus:outline-none hover:bg-red-600 rounded"
-                  href={createCartItemString()}
+                  onClick={() => {
+                    modal.current?.showModal();
+                  }}
                 >
                   Checkout
                   <svg
@@ -198,7 +245,7 @@ const CartComponent = () => {
                     <path d="M5.338 1.59a61.44 61.44 0 0 0-2.837.856.481.481 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.725 10.725 0 0 0 2.287 2.233c.346.244.652.42.893.533.12.057.218.095.293.118a.55.55 0 0 0 .101.025.615.615 0 0 0 .1-.025c.076-.023.174-.061.294-.118.24-.113.547-.29.893-.533a10.726 10.726 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067c-.53 0-1.552.223-2.662.524zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.775 11.775 0 0 1-2.517 2.453 7.159 7.159 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7.158 7.158 0 0 1-1.048-.625 11.777 11.777 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 62.456 62.456 0 0 1 5.072.56z" />
                     <path d="M9.5 6.5a1.5 1.5 0 0 1-1 1.415l.385 1.99a.5.5 0 0 1-.491.595h-.788a.5.5 0 0 1-.49-.595l.384-1.99a1.5 1.5 0 1 1 2-1.415z" />
                   </svg>
-                </a>
+                </button>
               </>
             ) : (
               <div className="w-full flex justify-center flex-wrap">
@@ -211,6 +258,61 @@ const CartComponent = () => {
           </div>
         </div>
       </div>
+      <dialog id="my_modal_2" className="modal" ref={modal}>
+        <div className="modal-box text-white h-auto pb-48">
+          <div className="form-control">
+            <label className="label cursor-pointer">
+              <span className="label-text">Shipping</span>
+              <input
+                name="shippingModal"
+                type="checkbox"
+                className="toggle"
+                onChange={() => {
+                  setShipping(!shipping);
+                }}
+              />
+            </label>
+            {shipping && (
+              <GooglePlacesAutocomplete
+                selectProps={{
+                  styles: {
+                    input: (provided) => ({
+                      ...provided,
+                      color: "black",
+                    }),
+                    option: (provided) => ({
+                      ...provided,
+                      color: "black",
+                    }),
+                    singleValue: (provided) => ({
+                      ...provided,
+                      color: "black",
+                    }),
+                  },
+                  onChange: (e) => {
+                    if (e !== null) setGoogleAddress(e);
+                  },
+                }}
+              />
+            )}
+            {shipping && !shippable ? (
+              <a className="text-white border-0 py-2 px-6 rounded absolute bottom-4 right-4 btn-disabled btn">
+                Cannot Ship to Location
+              </a>
+            ) : (
+              <a
+                className="text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded absolute bottom-4 right-4"
+                href={createCartItemString()}
+              >
+                Buy Now
+              </a>
+            )}
+          </div>
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
     </>
   );
 };

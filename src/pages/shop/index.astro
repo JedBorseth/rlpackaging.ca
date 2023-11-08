@@ -65,10 +65,16 @@ const success = Astro.url.searchParams.get("success");
   <header class="sticky top-0 z-50">
     <Navbar />
   </header>
+  <script>
+    // Script to clear cart after successful purchase
+    import { cart } from "../../store";
+    const div = document.querySelector("#success") as HTMLDivElement;
+    if (Boolean(div?.dataset?.success)) cart.set([]);
+  </script>
   <main>
     {
       success && (
-        <div class="alert alert-success">
+        <div class="alert alert-success" data-success="true" id="success">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="stroke-current shrink-0 h-6 w-6"
@@ -82,7 +88,10 @@ const success = Astro.url.searchParams.get("success");
               d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <span>Your purchase has been confirmed!</span>
+          <span>
+            Your purchase has been confirmed! <br /> An email has been sent
+            regarding your order.
+          </span>
         </div>
       )
     }
@@ -165,6 +174,4 @@ const success = Astro.url.searchParams.get("success");
       </p>
     </div>
   </footer>
-  {success && <script>import {cart} from "../../store"; cart.set([]);</script>}
-  <!-- This part of checkout may cause errors -->
 </Layout>
