@@ -8,7 +8,8 @@ import prefetch from "@astrojs/prefetch";
 
 // https://astro.build/config
 export default defineConfig({
+  site: "https://rlpackaging.ca",
   integrations: [tailwind(), react(), sitemap(), prefetch()],
   output: "server",
-  adapter: netlify()
+  adapter: netlify(),
 });
