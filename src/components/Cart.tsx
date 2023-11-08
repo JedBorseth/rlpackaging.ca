@@ -1,68 +1,112 @@
 import { useState, useEffect } from "react";
 import { cart } from "../store";
+import type { CartTypes } from "../store";
+import toast, { Toaster } from "react-hot-toast";
 
 const CartComponent = () => {
-  const [cartItems, setCartItems] = useState<
-    { name: string; quantity: number; id: string }[]
-  >([]);
+  const [cartItems, setCartItems] = useState<CartTypes | null>(null);
+  const [total, setTotal] = useState<number>(0);
   const clearCart = () => {
     cart.set([]);
   };
   const removeItem = (id: string) => {
-    cart.set(cartItems.filter((item) => item.id !== id));
+    if (cartItems !== null)
+      cart.set(cartItems.filter((item) => item.id !== id));
   };
   const changeQuantity = (id: string, quantity: number) => {
-    cart.set(
-      cartItems.map((item) => {
-        if (item.id === id) {
-          return {
-            ...item,
-            quantity,
-          };
-        }
-        return item;
-      })
-    );
+    if (cartItems !== null) {
+      const savedInvCount = Number(
+        cartItems.filter((item) => item.id === id)[0].details.inventoryCount
+      );
+      if (savedInvCount <= quantity) {
+        toast.error("Not enough stock, max: " + savedInvCount);
+        return;
+      }
+      cart.set(
+        cartItems.map((item) => {
+          if (item.id === id) {
+            return {
+              ...item,
+              quantity,
+            };
+          }
+          return item;
+        })
+      );
+    }
   };
 
   useEffect(() => {
     cart.subscribe(() => {
       setCartItems(cart.get());
     });
+    const updateCartData = async () => {
+      // This ensures that the cart data is up to date with the server
+      const currentCart = cart.get();
+      const res = await fetch("../api/updateCartData", {
+        method: "POST",
+        body: JSON.stringify(currentCart),
+      });
+      const data = await res.json();
+      console.log(data, currentCart);
+      cart.set(data);
+    };
+    updateCartData();
   }, []);
+
+  useEffect(() => {
+    if (cartItems === null) return;
+    let total = 0;
+    cart.get()?.forEach((item) => {
+      total += Number(item.details.price.replace("CA$", "")) * item.quantity;
+    });
+    setTotal(total);
+  }, [cartItems]);
+  const createCartItemString = () => {
+    if (cartItems === null) return "../404";
+    const id = cartItems.map((item) => item.id).join(",");
+    const quantity = cartItems.map((item) => item.quantity).join(",");
+    return `../api/cartCheckout?ids=${id}&amounts=${quantity}&shipping=false`;
+  };
+
   return (
-    <div className="min-h-screen w-full flex justify-center items-center text-gray-900 bg-neutral-300 transition-all">
-      <div>
-        <h1 className="text-3xl text-center underline underline-offset-2 font-semibold">
+    <>
+      <Toaster />
+      <div className="min-h-screen w-full flex justify-center items-center text-gray-900 bg-neutral-300 transition-all flex-wrap">
+        <h1 className="text-3xl text-center underline underline-offset-2 font-semibold w-full">
           Your Cart
         </h1>
-        {cartItems.length >= 0
-          ? cartItems.map((item) => {
+        <div className="grid grid-cols-1 w-2/3 py-5 gap-5 pt-8">
+          {cartItems !== null && cartItems.length >= 0 ? (
+            cartItems.map((item) => {
               return (
                 <div
                   key={item.id}
-                  className="lg:w-1/4 md:w-1/2 p-8 w-full md:tooltip relative"
-                  data-tip={"No Description For Product"}
+                  className="flex gap-5 flex-wrap lg:flex-nowrap"
                 >
-                  <a
-                    className="block relative rounded overflow-hidden w-full"
-                    href={`./shop/${item.id}`}
-                  >
+                  <a className="" href={`./shop/${item.id}`}>
                     <img
                       alt="image of item"
-                      className="object-cover object-center w-full h-24 block"
-                      src="https://dummyimage.com/420x260"
+                      className="h-24 w-32 object-cover rounded"
+                      src={
+                        item?.details?.imageUrl.toString() ??
+                        "https://via.placeholder.com/150"
+                      }
                     />
                   </a>
-                  <h3 className="text-red-600 absolute top-5 right-5 font-bold">
-                    x{item.quantity}
-                  </h3>
-                  <div className="flex flex-wrap items-center gap-5">
-                    <h2 className="text-gray-900 title-font text-lg font-medium w-full">
-                      {item.name}
+                  <div className="">
+                    <h2 className="">{item.name}</h2>
+                    <p className="text-sm text-gray-600">
+                      {item.details.description.slice(0, 40)} [...]
+                    </p>
+                  </div>
+                  <div className="grid lg:grid-cols-3 grid-cols-1 w-full">
+                    <h2 className="hidden lg:block">
+                      Each: <br />
+                      {item.details.price}
                     </h2>
                     <form
-                      className="flex-1 flex gap-2 justify-between"
+                      className="flex h-min flex-row-reverse md:flex-row gap-1"
                       onSubmit={(e) => {
                         e.preventDefault();
                         const quantity = parseInt(
@@ -71,64 +115,103 @@ const CartComponent = () => {
                         changeQuantity(item.id, quantity);
                       }}
                     >
-                      <div>
-                        <button
-                          onClick={() => {
-                            removeItem(item.id);
-                          }}
+                      <div className="flex flex-wrap">
+                        <label
+                          htmlFor={`quantity-${item.id}`}
+                          className="w-full"
                         >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            fill="currentColor"
-                            viewBox="0 0 16 16"
-                          >
-                            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
-                          </svg>
-                        </button>
+                          Quantity
+                        </label>
                         <input
                           type="number"
                           name="quantity"
-                          id="quantity"
+                          id={`quantity-${item.id}`}
                           defaultValue={item.quantity}
                           className="w-24 text-white p-1 rounded"
                         />
                       </div>
 
-                      <button type="submit" className="btn btn-sm btn-neutral">
+                      <button
+                        type="submit"
+                        className="btn btn-sm btn-neutral self-end"
+                      >
                         Update
                       </button>
                     </form>
+                    <h2 className="text-right">
+                      Total: <br />
+                      {(
+                        Number(item.details.price.replace("CA$", "")) *
+                        item.quantity
+                      ).toLocaleString("en-us", {
+                        style: "currency",
+                        currency: "CAD",
+                      })}
+                    </h2>
                   </div>
                 </div>
               );
             })
-          : null}
-        {cartItems.length !== 0 ? (
-          <div className="flex justify-between w-full p-20">
-            <button
-              className="btn"
-              onClick={() => {
-                clearCart();
-              }}
-            >
-              Clear All
-            </button>
-            <button className="btn btn-primary ml-auto bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded">
-              Buy All
-            </button>
+          ) : (
+            <div className="w-16 h-16 border-4 border-red-400 border-solid rounded-full animate-spin self-center justify-self-center">
+              .
+            </div>
+          )}
+          <div className="flex justify-between w-full lg:p-20 flex-wrap lg:gap-y-10">
+            {cartItems !== null && cartItems.length !== 0 ? (
+              <>
+                <div className="w-full pt-10 border-t border-black flex justify-between font-bold pb-4">
+                  <span className="">{cartItems.length} Items</span>
+                  <span>
+                    {total.toLocaleString("en-us", {
+                      style: "currency",
+                      currency: "CAD",
+                    })}
+                  </span>
+                </div>
+                <div className="flex flex-wrap w-min gap-2">
+                  <a className="btn btn-warning" href="../shop">
+                    Continue Shopping
+                  </a>
+                  <button
+                    className="btn"
+                    onClick={() => {
+                      clearCart();
+                      toast.success("Cleared cart");
+                    }}
+                  >
+                    Clear All
+                  </button>
+                </div>
+                <a
+                  className="btn btn-primary ml-auto bg-red-500 border-0 py-2 lg:px-6 xs:px-2 px-0 focus:outline-none hover:bg-red-600 rounded"
+                  href={createCartItemString()}
+                >
+                  Checkout
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M5.338 1.59a61.44 61.44 0 0 0-2.837.856.481.481 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.725 10.725 0 0 0 2.287 2.233c.346.244.652.42.893.533.12.057.218.095.293.118a.55.55 0 0 0 .101.025.615.615 0 0 0 .1-.025c.076-.023.174-.061.294-.118.24-.113.547-.29.893-.533a10.726 10.726 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067c-.53 0-1.552.223-2.662.524zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.775 11.775 0 0 1-2.517 2.453 7.159 7.159 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7.158 7.158 0 0 1-1.048-.625 11.777 11.777 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 62.456 62.456 0 0 1 5.072.56z" />
+                    <path d="M9.5 6.5a1.5 1.5 0 0 1-1 1.415l.385 1.99a.5.5 0 0 1-.491.595h-.788a.5.5 0 0 1-.49-.595l.384-1.99a1.5 1.5 0 1 1 2-1.415z" />
+                  </svg>
+                </a>
+              </>
+            ) : (
+              <div className="w-full flex justify-center flex-wrap">
+                <p className="py-10 w-full text-center">No items in cart</p>
+                <a href="../shop" className="btn">
+                  Return to shop
+                </a>
+              </div>
+            )}
           </div>
-        ) : (
-          <>
-            <p className="h-48 text-center">No items in cart</p>
-            <a href="../shop" className="btn">
-              Return to shop
-            </a>
-          </>
-        )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

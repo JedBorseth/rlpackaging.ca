@@ -165,4 +165,6 @@ const success = Astro.url.searchParams.get("success");
       </p>
     </div>
   </footer>
+  {success && <script>import {cart} from "../../store"; cart.set([]);</script>}
+  <!-- This part of checkout may cause errors -->
 </Layout>

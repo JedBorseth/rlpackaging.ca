@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { geocodeByAddress, getLatLng } from "react-google-places-autocomplete";
 import { cart } from "../store";
+import toast, { Toaster } from "react-hot-toast";
+
 // This is possibly the yuckiest code I've ever written, but it works
 type SingleShopItemProps = {
   name: string;
@@ -86,6 +88,8 @@ const SingleShopItem = ({
         console.log(distance);
         if (distance < 50 && inCanada) {
           setShippable(true);
+        } else {
+          setShippable(false);
         }
       });
   }, [googleAddress]);
@@ -102,22 +106,31 @@ const SingleShopItem = ({
     name,
     id,
     quantity,
+    details,
   }: {
     name: string;
     id: string;
     quantity: number;
+    details: {
+      attr1: { name: string; value: string };
+      price: string;
+      imageUrl: string | Response;
+      category: string | Response;
+      inventoryCount: string | Response;
+      description: string;
+    };
   }) => {
     const cartItems = cart.get();
     let exists = false;
     const newCartItems = cartItems.map((item) => {
       if (item.id === id) {
         exists = true;
-        return { ...item, quantity: item.quantity + quantity };
+        return { ...item, quantity: item.quantity + quantity, details };
       }
       return item;
     });
     if (!exists) {
-      cart.set([...cartItems, { name, id, quantity }]);
+      cart.set([...cartItems, { name, id, quantity, details }]);
     } else {
       cart.set(newCartItems);
     }
@@ -128,9 +141,27 @@ const SingleShopItem = ({
 
   return (
     <section className="text-gray-600 body-font overflow-hidden bg-neutral-300">
+      <Toaster />
       <div className="container px-5 py-24 mx-auto">
         <div className="lg:w-4/5 mx-auto flex flex-wrap">
-          <div className="lg:w-1/2 w-full lg:pr-10 lg:py-6 mb-6 lg:mb-0">
+          <div className="lg:w-1/2 w-full lg:pr-10 lg:py-6 mb-6 lg:mb-0 relative">
+            <a
+              className="btn btn-circle btn-ghost absolute -top-8 -left-4 p-4 hover:border-gray-200"
+              href="../shop"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M1.146 4.854a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H12.5A2.5 2.5 0 0 1 15 6.5v8a.5.5 0 0 1-1 0v-8A1.5 1.5 0 0 0 12.5 5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4z"
+                />
+              </svg>
+            </a>
             <h2 className="text-sm title-font text-gray-500 tracking-widest">
               {category.toString()}
             </h2>
@@ -216,21 +247,26 @@ const SingleShopItem = ({
                 <button
                   className="btn btn-primary ml-auto bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded"
                   onClick={() => {
-                    addItemToCart({ name, id, quantity });
+                    addItemToCart({
+                      name,
+                      id,
+                      quantity,
+                      details: {
+                        attr1,
+                        price,
+                        category,
+                        description,
+                        imageUrl,
+                        inventoryCount,
+                      },
+                    });
+                    toast.success("Added Item");
                   }}
                 >
                   Add to cart
                 </button>
                 <button
-                  className="btn"
-                  onClick={() => {
-                    clearCart();
-                  }}
-                >
-                  clear 'for testing'
-                </button>
-                <button
-                  className="btn btn-primary bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded"
+                  className="btn btn-neutral border-0 py-2 px-6 focus:outline-none rounded"
                   onClick={() => {
                     modal.current?.showModal();
                   }}
@@ -275,15 +311,18 @@ const SingleShopItem = ({
                         }}
                       />
                     )}
-                    <a
-                      className={`text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded absolute bottom-4 right-4 ${
-                        shipping && !shippable && "btn-disabled"
-                      }  
-                      `}
-                      href={`../api/checkout?id=${id}&quantity=${quantity}&shipping=${shipping}`}
-                    >
-                      Buy Now
-                    </a>
+                    {shipping && !shippable ? (
+                      <a className="text-white border-0 py-2 px-6 rounded absolute bottom-4 right-4 btn-disabled btn">
+                        Cannot Ship to Location
+                      </a>
+                    ) : (
+                      <a
+                        className="text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded absolute bottom-4 right-4"
+                        href={`../api/checkout?id=${id}&quantity=${quantity}&shipping=${shipping}`}
+                      >
+                        Buy Now
+                      </a>
+                    )}
                   </div>
                 </div>
                 <form method="dialog" className="modal-backdrop">
