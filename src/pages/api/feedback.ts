@@ -2,7 +2,7 @@ import type { APIRoute } from "astro";
 import { z } from "zod";
 import { Resend } from "resend";
 
-export const post: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request }) => {
   const api_key = import.meta.env.RESEND_KEY;
   const data = await request.formData();
   const name = data.get("name");
@@ -43,7 +43,7 @@ export const post: APIRoute = async ({ request }) => {
     try {
       const data = await resend.emails.send({
         from: `"${name}" <noreply@jedborseth.com>`,
-        to: ["production@rlpackaging.ca"],
+        to: ["orders@rlpackaging.ca"],
         subject: `From: ${email}`,
         html: `<html lang="en">
         <head>
@@ -106,5 +106,5 @@ export const post: APIRoute = async ({ request }) => {
   })();
 
   console.log(`Feedback from ${name} <${email}>: ${message}`);
-  return new Response(data, { status: 200 });
+  return new Response(JSON.stringify(data), { status: 200 });
 };
