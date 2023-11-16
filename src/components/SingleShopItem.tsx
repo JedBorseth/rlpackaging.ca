@@ -17,6 +17,7 @@ type SingleShopItemProps = {
   id: string;
   category: string | Response;
   attr1: { name: string; value: string };
+  attr2: { name: string; value: string };
 };
 type tabOptions = "description" | "rating" | "details";
 const SingleShopItem = ({
@@ -28,6 +29,7 @@ const SingleShopItem = ({
   id,
   category,
   attr1,
+  attr2,
 }: SingleShopItemProps) => {
   const [tab, setTab] = useState<tabOptions>("description");
   const [quantity, setQuantity] = useState(1);
@@ -77,13 +79,18 @@ const SingleShopItem = ({
   }, [quantity]);
 
   // Cart Stuff
-  const addItemToCart = ({ name, id, quantity, details }: CartTypes) => {
+  const addItemToCart = ({
+    name,
+    id,
+    quantity,
+    details,
+  }: CartTypes[number]) => {
     const cartItems = cart.get();
     let exists = false;
     const newCartItems = cartItems.map((item) => {
       if (item.id === id) {
         exists = true;
-        return { ...item, quantity: item.quantity + quantity, details };
+        return { ...item, quantity: Number(item.quantity) + quantity, details };
       }
       return item;
     });
@@ -170,16 +177,23 @@ const SingleShopItem = ({
                       {inventoryCount.toString()}
                     </span>
                   </div>
-                  <div className="flex border-t border-gray-200 py-2">
-                    <span className="text-gray-500">{attr1.name}</span>
-                    <span className="ml-auto text-gray-900">{attr1.value}</span>
-                  </div>
-                  <div className="flex border-t border-b mb-6 border-gray-200 py-2">
-                    <span className="text-gray-500">Quantity</span>
-                    <span className="ml-auto text-gray-900">
-                      {inventoryCount.toString()}
-                    </span>
-                  </div>
+                  {attr1.name && attr1.value && (
+                    <div className="flex border-t border-gray-200 py-2">
+                      <span className="text-gray-500">{attr1.name}</span>
+                      <span className="ml-auto text-gray-900">
+                        {attr1.value}
+                      </span>
+                    </div>
+                  )}
+
+                  {attr2.name && attr2.value && (
+                    <div className="flex border-t border-b mb-6 border-gray-200 py-2">
+                      <span className="text-gray-500">{attr2.name}</span>
+                      <span className="ml-auto text-gray-900">
+                        {attr2.value}
+                      </span>
+                    </div>
+                  )}
                 </>
               )}
               {tab === "rating" && (
@@ -189,9 +203,7 @@ const SingleShopItem = ({
                   <Star />
                   <Star />
                   <Star />
-                  <span className="text-gray-600">
-                    ({Math.floor(Math.random() * 20)}) Reviews
-                  </span>
+                  <span className="text-gray-600">(3) Reviews</span>
                   {/* These are fake reviews! :) */}
                 </div>
               )}
@@ -211,7 +223,7 @@ const SingleShopItem = ({
                   type="number"
                   max={inventoryCount.toString()}
                   min={0}
-                  className="dark:text-white px-2 rounded h-10"
+                  className="text-white px-2 rounded h-10"
                 />
               </div>
               <div className="flex flex-col gap-2 justify-center">
