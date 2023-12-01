@@ -1,0 +1,37 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import ViewBox from "../components/ViewBox";
+const date = new Date();
+export const prerender = true;
+
+const boxId = Astro.url.searchParams.get("id");
+---
+
+<Layout title="R&L Packaging">
+  <header class="sticky top-0 z-50">
+    <Navbar />
+  </header>
+  <main class="min-h-screen font-mono font-bold grid place-items-center pt-10">
+    <ViewBox client:load />
+  </main>
+
+  <footer
+    class="footer footer-center p-10 bg-base-200 text-base-content rounded"
+  >
+    <div class="grid grid-flow-col gap-4">
+      <a class="link link-hover home-scroll">Home</a>
+      <a class="link link-hover about-scroll">About</a>
+      <a class="link link-hover history-scroll">History</a>
+      <a class="link link-hover contact-scroll">Contact</a>
+    </div>
+    <div>
+      <p>
+        Copyright © {date.getFullYear()} - All right reserved by R&L Packaging
+      </p>
+      <p class="text-xs">
+        Website designed by <a href="https://jedborseth.com">Jed Borseth</a>
+      </p>
+    </div>
+  </footer>
+</Layout>

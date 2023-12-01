@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
 import SingleShopItem from "../../components/SingleShopItem";
+import ViewBox from "../../components/ViewBox";
 import type { CatalogItem, CatalogObject, ApiResponse } from "square";
 // @ts-ignore
 import { Client, Environment, RetrieveCatalogObjectResponse } from "square";
@@ -113,38 +114,21 @@ if (!item.result.object.itemData.variations)
           description={item.result.object.itemData.description}
           category={category ?? ""}
           attr1={{
-            name: customAttributes[0].name,
-            value: customAttributes[0].stringValue,
+            name: customAttributes[0].name ?? "",
+            value: customAttributes[0].stringValue ?? "",
+          }}
+          attr2={{
+            name: customAttributes?.[1]?.name ?? "",
+            value: customAttributes?.[1]?.stringValue ?? "",
           }}
         />
       )
     }
-
-    <!-- <h1 class="text-3xl text-center">
-      {response.object?.itemData.name}
-    </h1>
-    <div class="flex flex-wrap">
-      <img src={imageUrl} alt="Product Image" />
-      <p>
-        Stock: {
-          inventoryCount.result.counts &&
-            inventoryCount.result.counts[0]?.quantity
-        }
-      </p>
-      <a
-        href={`../checkout?id=${response.object.id}&quantity=1`}
-        class="btn"
-        id="buyLink">Buy Now</a
+    <div class="w-full h-20 grid place-items-center">
+      <a class="btn btn-primary" href={`../../view?id=${Astro.params.item}`}
+        >View Box? (beta)</a
       >
-      <label for="quantity">How Many?</label>
-      <input
-        type="number"
-        name="quantity"
-        id="quantity"
-        class="h-min w-10"
-        value="1"
-      />
-    </div> -->
+    </div>
   </main>
 
   <footer

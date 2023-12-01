@@ -99,56 +99,61 @@ const success = Astro.url.searchParams.get("success");
       <div class="container px-5 py-24 mx-auto">
         <div class="flex flex-wrap -m-4">
           {
-            items
-              ? items.map(async (item) => {
-                  const price =
-                    item?.itemData?.variations &&
-                    item?.itemData.variations[0].itemVariationData?.priceMoney
-                      ?.amount;
-                  const inventory = await fetchInventory(item);
-                  const imgUrl = await fetchImageUrls(item);
-                  const category = await fetchCategory(item);
-                  return (
-                    <div
-                      class="lg:w-1/4 md:w-1/2 p-4 w-full md:tooltip"
-                      data-tip={
-                        item.itemData?.description
-                          ? item.itemData.description
-                          : "No Description For Product"
-                      }
+            items ? (
+              items.map(async (item) => {
+                const price =
+                  item?.itemData?.variations &&
+                  item?.itemData.variations[0].itemVariationData?.priceMoney
+                    ?.amount;
+                const inventory = await fetchInventory(item);
+                const imgUrl = await fetchImageUrls(item);
+                const category = await fetchCategory(item);
+                return (
+                  <div
+                    class="lg:w-1/4 md:w-1/2 p-4 w-full md:tooltip"
+                    data-tip={
+                      item.itemData?.description
+                        ? item.itemData.description
+                        : "No Description For Product"
+                    }
+                  >
+                    <a
+                      class="block relative h-48 rounded overflow-hidden"
+                      href={`./shop/${item.id}`}
                     >
-                      <a
-                        class="block relative h-48 rounded overflow-hidden"
-                        href={`./shop/${item.id}`}
-                      >
-                        <img
-                          alt="ecommerce"
-                          class="object-cover object-center w-full h-full block"
-                          src={imgUrl?.result?.object?.imageData?.url}
-                        />
-                      </a>
-                      <div class="mt-4">
-                        <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">
-                          {category?.result.object?.categoryData?.name}
-                        </h3>
-                        <h2 class="text-gray-900 title-font text-lg font-medium">
-                          {item.itemData?.name}
-                        </h2>
-                        <p class="mt-1">
-                          {(Number(price) / 100).toLocaleString("en-US", {
-                            style: "currency",
-                            currency: "CAD",
-                          })}
-                          - Stock:
-                          {inventory &&
-                            inventory.result?.counts &&
-                            inventory.result.counts[0].quantity}
-                        </p>
-                      </div>
+                      <img
+                        alt="ecommerce"
+                        class="object-cover object-center w-full h-full block"
+                        src={imgUrl?.result?.object?.imageData?.url}
+                      />
+                    </a>
+                    <div class="mt-4">
+                      <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">
+                        {category?.result.object?.categoryData?.name}
+                      </h3>
+                      <h2 class="text-gray-900 title-font text-lg font-medium">
+                        {item.itemData?.name}
+                      </h2>
+                      <p class="mt-1">
+                        {(Number(price) / 100).toLocaleString("en-US", {
+                          style: "currency",
+                          currency: "CAD",
+                        })}
+                        - Stock:
+                        {inventory &&
+                          inventory.result?.counts &&
+                          inventory.result.counts[0].quantity}
+                      </p>
                     </div>
-                  );
-                })
-              : "Loading"
+                  </div>
+                );
+              })
+            ) : (
+              <div class="min-h-[50vh] grid place-items-center w-full">
+                <h3 class="text-2xl">Loading Shop Items.</h3>
+                <span class="loading loading-dots loading-lg" />
+              </div>
+            )
           }
         </div>
       </div>
