@@ -167,16 +167,16 @@ type SquareProps = {
   };
 };
 const Square = ({ size, pos, boxSettings }: SquareProps) => {
-  const [colorMap, bumpMap, normalMap] = useLoader(TextureLoader, [
-    "./textures/cardboard_texture.jpg",
-    "./textures/cardboard_bump.jpg",
-    "./textures/cardboard_normal.jpg",
-  ]);
-  colorMap.rotation = degToRad(90);
-  bumpMap.rotation = degToRad(90);
-  normalMap.rotation = degToRad(90);
-  colorMap.wrapS = THREE.RepeatWrapping;
-  colorMap.wrapT = THREE.RepeatWrapping;
+  // const [colorMap, bumpMap, normalMap] = useLoader(TextureLoader, [
+  //   "./textures/cardboard_texture.jpg",
+  //   "./textures/cardboard_bump.jpg",
+  //   "./textures/cardboard_normal.jpg",
+  // ]);
+  // colorMap.rotation = degToRad(90);
+  // bumpMap.rotation = degToRad(90);
+  // normalMap.rotation = degToRad(90);
+  // colorMap.wrapS = THREE.RepeatWrapping;
+  // colorMap.wrapT = THREE.RepeatWrapping;
 
   return (
     <mesh position={new THREE.Vector3(pos.y, pos.x, pos.z)}>
